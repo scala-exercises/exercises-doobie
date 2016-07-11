@@ -14,6 +14,7 @@ object DoobieLibrary extends Library {
   override def color = Some("#5B5988")
 
   override def sections: List[Section] = List(
-    ConnectingToDatabaseSection
+    ConnectingToDatabaseSection,
+    SelectingDataSection
   )
 }
