@@ -1,11 +1,10 @@
-package exercises.doobie
+package doobie
 
-import doobie._
-import exercises.Test
-import shapeless.HNil
+import org.scalacheck.Shapeless._
+import org.scalaexercises.Test
 import org.scalatest.Spec
 import org.scalatest.prop.Checkers
-import org.scalacheck.Shapeless._
+import shapeless.HNil
 
 class ConnectingToDatabaseSectionSpec extends Spec with Checkers {
 
