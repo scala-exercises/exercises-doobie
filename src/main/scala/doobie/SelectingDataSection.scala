@@ -69,7 +69,7 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
   /**
     * == Getting info about the countries ==
     *
-    * We can use the `unique` method if the query just returns one row
+    * We can use the `unique` method if we expect the query to return only one row
     */
   def selectUniqueCountryName(res0: String) = {
 
