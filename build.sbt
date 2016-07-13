@@ -16,8 +16,8 @@ lazy val doobie = (project in file("."))
       "org.scala-exercises" %% "definitions" % version.value,
       "org.scalacheck" %% "scalacheck" % "1.12.5",
       "com.github.alexarchambault" %% "scalacheck-shapeless_1.12" % "0.3.1",
-      "org.tpolecat" %% "doobie-core" % "0.2.3",
-      "org.tpolecat" %% "doobie-contrib-h2" % "0.2.3",
+      "org.tpolecat" %% "doobie-core" % "0.3.0",
+      "org.tpolecat" %% "doobie-contrib-h2" % "0.3.0",
       compilerPlugin("org.spire-math" %% "kind-projector" % "0.7.1")
     )
   )
