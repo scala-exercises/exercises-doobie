@@ -1,8 +1,8 @@
 package exercises.doobie
 
 import doobie._
-import exercises.Test
 import org.scalacheck.Shapeless._
+import org.scalaexercises.Test
 import org.scalatest.Spec
 import org.scalatest.prop.Checkers
 import shapeless.HNil
