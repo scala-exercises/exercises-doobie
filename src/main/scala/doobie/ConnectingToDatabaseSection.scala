@@ -1,13 +1,12 @@
 package doobie
 
-import org.scalatest._
+import doobie.DoobieUtils._
 import doobie.imports._
 import org.scalaexercises.definitions.Section
+import org.scalatest._
 
+import scalaz.Scalaz._
 import scalaz._
-import Scalaz._
-import scala.util.Random
-import scalaz.concurrent.Task
 
 /** ==Introduction==
   * doobie is a monadic API that provides a number of data types that all work the same way
@@ -59,13 +58,6 @@ import scalaz.concurrent.Task
   * @param name connecting_to_database
   */
 object ConnectingToDatabaseSection extends FlatSpec with Matchers with Section {
-
-  val xa = DriverManagerTransactor[Task](
-    driver = "org.h2.Driver",
-    url = s"jdbc:h2:mem:doobie-exercises-${Random.nextFloat()};DB_CLOSE_DELAY=-1;MODE=PostgreSQL",
-    user = "sa",
-    pass = ""
-  )
 
   /**
     * Right, so let’s do this.

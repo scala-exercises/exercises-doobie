@@ -1,6 +1,5 @@
-package exercises.doobie
+package doobie
 
-import doobie._
 import org.scalacheck.Shapeless._
 import org.scalaexercises.Test
 import org.scalatest.Spec
