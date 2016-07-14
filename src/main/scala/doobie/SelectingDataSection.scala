@@ -1,7 +1,6 @@
 package doobie
 
 import doobie.DoobieUtils._
-import doobie.Model._
 import doobie.imports._
 import org.scalaexercises.definitions.Section
 import org.scalatest.{FlatSpec, Matchers}
@@ -58,13 +57,6 @@ import org.scalatest.{FlatSpec, Matchers}
   * @param name selecting_data
   */
 object SelectingDataSection extends FlatSpec with Matchers with Section {
-
-  val initializeData = for {
-    _ <- createCountryTable
-    _ <- insertCountries(countries)
-  } yield Unit
-
-  val cleanupData = dropCountryTable
 
   /**
     * == Getting info about the countries ==
