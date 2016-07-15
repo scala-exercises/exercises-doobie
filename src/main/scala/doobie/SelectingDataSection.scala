@@ -19,7 +19,7 @@ import org.scalatest.{FlatSpec, Matchers}
   * )
   * }}}
   *
-  * For the exercises, the country table will contain:
+  * For the exercises, the ''country'' table will contain:
   * {{{
   * code    name                      population    gnp
   * "DEU"  "Germany"                    82164700    2133367.00
@@ -38,21 +38,42 @@ import org.scalatest.{FlatSpec, Matchers}
   * is a one-column query that maps each returned row to a String.
   *
   * Once we generate this query, we could use several convenience methods to stream the results:
-  * - `.list`, which accumulates the results to a `List`, in this case yielding a
+  *  - `.list`, which accumulates the results to a `List`, in this case yielding a
   * `ConnectionIO[List[String]]`.
-  * - `.vector`, which accumulates to a `Vector`
-  * - `.to[Coll]`, which accumulates to a type `Coll`, given an implicit `CanBuildFrom`. This works
+  *  - `.vector`, which accumulates to a `Vector`
+  *  - `.to[Coll]`, which accumulates to a type `Coll`, given an implicit `CanBuildFrom`. This works
   * with Scala standard library collections.
-  * - `.accumulate[M[_]: MonadPlus]` which accumulates to a universally quantified monoid `M`.
+  *  - `.accumulate[M[_]: MonadPlus]` which accumulates to a universally quantified monoid `M`.
   * This works with many scalaz collections, as well as standard library collections with
   * `MonadPlus` instances.
-  * - `.unique` which returns a single value, raising an exception if there is not exactly
+  *  - `.unique` which returns a single value, raising an exception if there is not exactly
   * one row returned.
-  * - `.option` which returns an Option, raising an exception if there is more than
+  *  - `.option` which returns an Option, raising an exception if there is more than
   * one row returned.
-  * - `.nel` which returns an `NonEmptyList`, raising an exception if there are no rows returned.
-  * - See the Scaladoc for [[http://tpolecat.github.io/doc/doobie/0.3.0/api/index.html#doobie.util.query$$Query0 `Query0`]]
+  *  - `.nel` which returns an `NonEmptyList`, raising an exception if there are no rows returned.
+  *  - See the Scaladoc for [[http://tpolecat.github.io/doc/doobie/0.3.0/api/index.html#doobie.util.query$$Query0 `Query0`]]
   * for more information on these and other methods.
+  *
+  * == Note ==
+  *
+  * To run the exercises, we need to create a table in memory and populate it before each exercise
+  * and clean up the data once the exercise has been run.
+  *
+  * To do that, we have defined a method called `inDb` that:
+  *  - receives a doobie code block that performs a query to the database
+  *  - executes the data initialization (before running the provided code block) and performs a
+  * cleanup task at the end of the execution
+  *  - returns a ConnectionIO that contains the result of the query
+  *
+  * {{{
+  * def inDb[A](thunk: => ConnectionIO[A]) = for {
+  *   _ <- initializeData
+  *   result <- thunk
+  *   _ <- cleanupData
+  * } yield result
+  * }}}
+  *
+  * So, whenever you find an `inDb` wrapper, it's just performing the tasks described above.
   *
   * @param name selecting_data
   */
@@ -65,15 +86,9 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
     */
   def selectUniqueCountryName(res0: String) = {
 
-    val query = sql"select name from country where code = 'ESP'".query[String]
-
-    val persistenceOps = for {
-      _ <- initializeData
-      countryNames <- query.unique
-      _ <- cleanupData
-    } yield countryNames
-
-    val countryName: String = persistenceOps.transact(xa).run
+    val countryName = inDb {
+      sql"select name from country where code = 'ESP'".query[String].unique
+    }.transact(xa).run
 
     countryName should be(res0)
   }
@@ -83,15 +98,9 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
     */
   def selectOptionalCountryName(res0: Option[String]) = {
 
-    val query = sql"select name from country where code = 'ITA'".query[String]
-
-    val persistenceOps = for {
-      _ <- initializeData
-      countryNames <- query.option
-      _ <- cleanupData
-    } yield countryNames
-
-    val maybeCountryName: Option[String] = persistenceOps.transact(xa).run
+    val maybeCountryName = inDb {
+      sql"select name from country where code = 'ITA'".query[String].option
+    }.transact(xa).run
 
     maybeCountryName should be(res0)
   }
@@ -102,15 +111,9 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
     */
   def selectCountryNameList(res0: String) = {
 
-    val query = sql"select name from country order by name".query[String]
-
-    val persistenceOps = for {
-      _ <- initializeData
-      countryNames <- query.list
-      _ <- cleanupData
-    } yield countryNames
-
-    val countryNames: List[String] = persistenceOps.transact(xa).run
+    val countryNames = inDb {
+      sql"select name from country order by name".query[String].list
+    }.transact(xa).run
 
     countryNames.head should be(res0)
   }
@@ -127,15 +130,9 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
     */
   def selectCountryNameListByUsingProcess(res0: Int) = {
 
-    val query = sql"select name from country order by name".query[String]
-
-    val persistenceOps = for {
-      _ <- initializeData
-      countryNames <- query.process.take(3).list
-      _ <- cleanupData
-    } yield countryNames
-
-    val countryNames: List[String] = persistenceOps.transact(xa).run
+    val countryNames = inDb {
+      sql"select name from country order by name".query[String].process.take(3).list
+    }.transact(xa).run
 
     countryNames.size should be(res0)
   }

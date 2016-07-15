@@ -38,4 +38,10 @@ object DoobieUtils {
   } yield Unit
 
   val cleanupData = dropCountryTable
+
+  def inDb[A](thunk: => ConnectionIO[A]) = for {
+    _ <- initializeData
+    result <- thunk
+    _ <- cleanupData
+  } yield result
 }
