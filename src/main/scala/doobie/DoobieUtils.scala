@@ -6,6 +6,8 @@ import doobie.Model._
 import doobie.imports._
 import doobie.free.{ drivermanager => FD }
 
+import java.sql.Connection
+
 import scalaz.concurrent.Task
 import scalaz._, Scalaz._
 
@@ -14,12 +16,12 @@ object DoobieUtils {
   // Transactor for single-use in-memory databases pre-populated with test data.
   val xa = new Transactor[Task] {
 
-    val driver =  "org.h2.Driver"
-    def url    = s"jdbc:h2:mem:"
-    val user   =  "sa"
-    val pass   =  ""
+    val driver = "org.h2.Driver"
+    def url    = "jdbc:h2:mem:"
+    val user   = "sa"
+    val pass   = ""
 
-    val connect =
+    val connect: Task[Connection] =
       Task.delay(Class.forName(driver)) *> FD.getConnection(url, user, pass).trans[Task]
 
     val createCountryTable: ConnectionIO[Int] =
