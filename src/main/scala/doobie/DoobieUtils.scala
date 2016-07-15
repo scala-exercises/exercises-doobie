@@ -4,44 +4,40 @@ import java.util.UUID
 
 import doobie.Model._
 import doobie.imports._
+import doobie.free.{ drivermanager => FD }
 
 import scalaz.concurrent.Task
-import scalaz.std.iterable._
+import scalaz._, Scalaz._
 
 object DoobieUtils {
 
-  val xa = DriverManagerTransactor[Task](
-    driver = "org.h2.Driver",
-    url = s"jdbc:h2:mem:doobie-exercises-${UUID.randomUUID().toString};DB_CLOSE_DELAY=-1;MODE=PostgreSQL",
-    user = "sa",
-    pass = ""
-  )
+  // Transactor for single-use in-memory databases pre-populated with test data.
+  val xa = new Transactor[Task] {
 
-  val createCountryTable: ConnectionIO[Int] =
-    sql"""
-        CREATE TABLE IF NOT EXISTS country (
-        code        VARCHAR(64),
-        name        VARCHAR(255),
-        population  INT,
-        gnp         DECIMAL(10,2)
-        )
-     """.update.run
+    val driver =  "org.h2.Driver"
+    def url    = s"jdbc:h2:mem:"
+    val user   =  "sa"
+    val pass   =  ""
 
-  val dropCountryTable: ConnectionIO[Int] = sql"""DROP TABLE IF EXISTS country""".update.run
+    val connect =
+      Task.delay(Class.forName(driver)) *> FD.getConnection(url, user, pass).trans[Task]
 
-  def insertCountries(countries: List[Country]): ConnectionIO[Int] =
-    Update[Country](s"insert into country (code, name, population, gnp) values (?,?,?,?)").updateMany(countries)
+    val createCountryTable: ConnectionIO[Int] =
+      sql"""
+          CREATE TABLE IF NOT EXISTS country (
+          code        VARCHAR(64),
+          name        VARCHAR(255),
+          population  INT,
+          gnp         DECIMAL(10,2)
+          )
+       """.update.run
 
-  val initializeData = for {
-    _ <- createCountryTable
-    _ <- insertCountries(countries)
-  } yield Unit
+    def insertCountries(countries: List[Country]): ConnectionIO[Int] =
+      Update[Country](s"insert into country (code, name, population, gnp) values (?,?,?,?)").updateMany(countries)
 
-  val cleanupData = dropCountryTable
+    override val before = 
+      super.before <* createCountryTable <* insertCountries(countries)
 
-  def inDb[A](thunk: => ConnectionIO[A]) = for {
-    _ <- initializeData
-    result <- thunk
-    _ <- cleanupData
-  } yield result
+  }
+
 }
