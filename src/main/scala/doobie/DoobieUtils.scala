@@ -1,7 +1,5 @@
 package doobie
 
-import java.util.UUID
-
 import doobie.Model._
 import doobie.imports._
 import doobie.free.{ drivermanager => FD }
