@@ -6,7 +6,7 @@ import org.scalaexercises.definitions.Section
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
-  * We are gonna construct some programs that retrieve data from the database and stream it back,
+  * We are going to construct some programs that retrieve data from the database and stream it back,
   * mapping to Scala types on the way.
   *
   * We will be playing with the country table that has the following structure:
@@ -54,27 +54,6 @@ import org.scalatest.{FlatSpec, Matchers}
   *  - See the Scaladoc for [[http://tpolecat.github.io/doc/doobie/0.3.0/api/index.html#doobie.util.query$$Query0 `Query0`]]
   * for more information on these and other methods.
   *
-  * == Note ==
-  *
-  * To run the exercises, we need to create a table in memory and populate it before each exercise
-  * and clean up the data once the exercise has been run.
-  *
-  * To do that, we have defined a method called `inDb` that:
-  *  - receives a doobie code block that performs a query to the database
-  *  - executes the data initialization (before running the provided code block) and performs a
-  * cleanup task at the end of the execution
-  *  - returns a ConnectionIO that contains the result of the query
-  *
-  * {{{
-  * def inDb[A](thunk: => ConnectionIO[A]) = for {
-  *   _ <- initializeData
-  *   result <- thunk
-  *   _ <- cleanupData
-  * } yield result
-  * }}}
-  *
-  * So, whenever you find an `inDb` wrapper, it's just performing the tasks described above.
-  *
   * @param name selecting_data
   */
 object SelectingDataSection extends FlatSpec with Matchers with Section {
@@ -86,9 +65,12 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
     */
   def selectUniqueCountryName(res0: String) = {
 
-    val countryName = inDb {
-      sql"select name from country where code = 'ESP'".query[String].unique
-    }.transact(xa).run
+    val countryName =
+      sql"select name from country where code = 'ESP'"
+        .query[String]
+        .unique
+        .transact(xa)
+        .run
 
     countryName should be(res0)
   }
@@ -98,9 +80,12 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
     */
   def selectOptionalCountryName(res0: Option[String]) = {
 
-    val maybeCountryName = inDb {
-      sql"select name from country where code = 'ITA'".query[String].option
-    }.transact(xa).run
+    val maybeCountryName =
+      sql"select name from country where code = 'ITA'"
+        .query[String]
+        .option
+        .transact(xa)
+        .run
 
     maybeCountryName should be(res0)
   }
@@ -111,9 +96,12 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
     */
   def selectCountryNameList(res0: String) = {
 
-    val countryNames = inDb {
-      sql"select name from country order by name".query[String].list
-    }.transact(xa).run
+    val countryNames =
+      sql"select name from country order by name"
+        .query[String]
+        .list
+        .transact(xa)
+        .run
 
     countryNames.head should be(res0)
   }
@@ -130,9 +118,14 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
     */
   def selectCountryNameListByUsingProcess(res0: Int) = {
 
-    val countryNames = inDb {
-      sql"select name from country order by name".query[String].process.take(3).list
-    }.transact(xa).run
+    val countryNames =
+      sql"select name from country order by name"
+        .query[String]
+        .process
+        .take(3)
+        .list
+        .transact(xa)
+        .run
 
     countryNames.size should be(res0)
   }
