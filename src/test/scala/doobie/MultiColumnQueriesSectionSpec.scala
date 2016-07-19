@@ -27,7 +27,7 @@ class MultiColumnQueriesSectionSpec extends Spec with Checkers {
       )
     )
   }
-
+/*
   def `select multiple columns using Record` = {
     check(
       Test.testSuccess(
@@ -36,7 +36,7 @@ class MultiColumnQueriesSectionSpec extends Spec with Checkers {
       )
     )
   }
-
+*/
   def `select multiple columns using case class` = {
     check(
       Test.testSuccess(

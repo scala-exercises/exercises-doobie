@@ -63,7 +63,7 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
 
     hlist.head should be(res0)
   }
-
+/*
   /**
     * And with a shapeless record:
     */
@@ -80,7 +80,7 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
 
     record('pop) should be(res0)
   }
-
+*/
   /**
     * And again, mapping rows to a case class.
     *

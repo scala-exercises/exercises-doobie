@@ -16,6 +16,7 @@ object DoobieLibrary extends Library {
   override def sections: List[Section] = List(
     ConnectingToDatabaseSection,
     SelectingDataSection,
-    MultiColumnQueriesSection
+    MultiColumnQueriesSection,
+    ParameterizedQueriesSection
   )
 }
