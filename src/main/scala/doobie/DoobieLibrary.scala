@@ -11,12 +11,13 @@ object DoobieLibrary extends Library {
   override def owner: String = "scala-exercises"
   override def repository: String = "exercises-doobie"
 
-  override def color = Some("#5B5988")
+  override def color = Some("#E35E31")
 
   override def sections: List[Section] = List(
     ConnectingToDatabaseSection,
     SelectingDataSection,
     MultiColumnQueriesSection,
-    ParameterizedQueriesSection
+    ParameterizedQueriesSection,
+    UpdatesSection
   )
 }
