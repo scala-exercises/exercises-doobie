@@ -1,10 +1,10 @@
 package doobie
 
-import doobie.Model._
-import doobie.imports._
-import doobie.free.{ drivermanager => FD }
-
 import java.sql.Connection
+
+import doobie.Model._
+import doobie.free.{ drivermanager => FD }
+import doobie.imports._
 
 import scalaz.concurrent.Task
 import scalaz._, Scalaz._

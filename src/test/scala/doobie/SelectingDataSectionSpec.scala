@@ -25,22 +25,23 @@ class SelectingDataSectionSpec extends Spec with Checkers {
       )
     )
   }
+
   def `select optional country name` = {
     val value: Option[String] = None
     check(
-    Test.testSuccess(
-    SelectingDataSection.selectOptionalCountryName _,
-    value :: HNil
-    )
+      Test.testSuccess(
+        SelectingDataSection.selectOptionalCountryName _,
+        value :: HNil
+      )
     )
   }
 
   def `select unique country name` = {
     check(
-    Test.testSuccess(
-    SelectingDataSection.selectUniqueCountryName _,
-    "Spain" :: HNil
-    )
+      Test.testSuccess(
+        SelectingDataSection.selectUniqueCountryName _,
+        "Spain" :: HNil
+      )
     )
   }
 
