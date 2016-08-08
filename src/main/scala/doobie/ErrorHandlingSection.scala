@@ -6,7 +6,7 @@ import doobie.imports._
 import org.scalaexercises.definitions.Section
 import org.scalatest.{FlatSpec, Matchers}
 
-import scalaz.\/
+import scalaz._
 
 /**
   * ==About Exceptions==
@@ -19,8 +19,8 @@ import scalaz.\/
   * provided interpreter requires all target monads to have an instance as well. `Catchable`
   * provides two operations:
   *
-  * - `attempt` converts `M[A]` into `M[Throwable \/ A]`
-  * - `fail` constructs an `M[A]` that fails with a provided `Throwable`
+  *  - `attempt` converts `M[A]` into `M[Throwable \/ A]`
+  *  - `fail` constructs an `M[A]` that fails with a provided `Throwable`
   *
   * So any '''doobie''' program can be lifted into a disjunction simply by adding `.attempt`.
   *
@@ -34,25 +34,25 @@ import scalaz.\/
   *
   * From the `.attempt` combinator we derive the following, available as combinators and as syntax:
   *
-  * - `attemptSome` allows you to catch only specified `Throwable`s.
-  * - `except` recovers with a new action.
-  * - `exceptSome` same, but only for specified `Throwable`s.
-  * - `onException` executes an action on failure, discarding its result.
-  * - `ensuring` executes an action in all cases, generalizing `finally`.
+  *  - `attemptSome` allows you to catch only specified `Throwable`s.
+  *  - `except` recovers with a new action.
+  *  - `exceptSome` same, but only for specified `Throwable`s.
+  *  - `onException` executes an action on failure, discarding its result.
+  *  - `ensuring` executes an action in all cases, generalizing `finally`.
   *
   * From these we can derive combinators that only pay attention to `SQLException`:
   *
-  * - `attemptSql` is like `attempt` but only traps `SQLException`.
-  * - `attemptSomeSql` traps only specified `SQLException`s.
-  * - `exceptSql` recovers from a SQLException with a new action.
-  * - `onSqlException` executes an action on `SQLException` and discards its result.
+  *  - `attemptSql` is like `attempt` but only traps `SQLException`.
+  *  - `attemptSomeSql` traps only specified `SQLException`s.
+  *  - `exceptSql` recovers from a SQLException with a new action.
+  *  - `onSqlException` executes an action on `SQLException` and discards its result.
   *
   * And finally we have a set of combinators that focus on SQLStates.
   *
-  * - `attemptSqlState` is like `attemptSql` but yields `M[SQLState \/ A]`.
-  * - `attemptSomeSqlState` traps only specified `SQLState`s.
-  * - `exceptSqlState` recovers from a `SQLState` with a new action.
-  * - `exceptSomeSqlState` recovers from specified `SQLState`s with a new action.
+  *  - `attemptSqlState` is like `attemptSql` but yields `M[SQLState \/ A]`.
+  *  - `attemptSomeSqlState` traps only specified `SQLState`s.
+  *  - `exceptSqlState` recovers from a `SQLState` with a new action.
+  *  - `exceptSomeSqlState` recovers from specified `SQLState`s with a new action.
   *
   * @param name error_handling
   */
@@ -112,8 +112,8 @@ object ErrorHandlingSection extends FlatSpec with Matchers with Section {
     * `attemptSomeSqlState`. We can specify several `SqlState` values and indicate what value we'll
     * return in each case. We can:
     *
-    * - Use the `SqlState` values provided as constants in the contrib-postgresql add-on
-    * - Create a new `SqlState` value by typing `val UNIQUE_VIOLATION = SqlState("23505")`
+    *  - Use the `SqlState` values provided as constants in the contrib-postgresql add-on
+    *  - Create a new `SqlState` value by typing `val UNIQUE_VIOLATION = SqlState("23505")`
     */
   def safeInsertWithAttemptSomeSqlState(res0: String \/ Long) = {
 
