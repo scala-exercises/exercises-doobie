@@ -1,6 +1,6 @@
 package doobie
 
-import doobie.DoobieUtils._
+import doobie.DoobieUtils.CountryTable._
 import doobie.Model._
 import doobie.ParameterizedQueryHelpers._
 import doobie.imports._

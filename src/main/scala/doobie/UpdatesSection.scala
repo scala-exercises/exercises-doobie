@@ -1,5 +1,6 @@
 package doobie
 
+import doobie.DoobieUtils.PersonTable._
 import doobie.UpdatesSectionHelpers._
 import doobie.imports._
 import org.scalaexercises.definitions.Section

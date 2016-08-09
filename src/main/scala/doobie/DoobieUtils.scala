@@ -11,9 +11,7 @@ import scalaz._, Scalaz._
 
 object DoobieUtils {
 
-  // Transactor for single-use in-memory databases pre-populated with test data.
-  val xa = new Transactor[Task] {
-
+  class CustomTransactor[B](implicit beforeActions: ConnectionIO[B]) extends Transactor[Task] {
     val driver = "org.h2.Driver"
     def url    = "jdbc:h2:mem:"
     val user   = "sa"
@@ -21,6 +19,11 @@ object DoobieUtils {
 
     val connect: Task[Connection] =
       Task.delay(Class.forName(driver)) *> FD.getConnection(url, user, pass).trans[Task]
+
+    override val before = super.before <* beforeActions
+  }
+
+  object CountryTable {
 
     val createCountryTable: ConnectionIO[Int] =
       sql"""
@@ -33,11 +36,28 @@ object DoobieUtils {
        """.update.run
 
     def insertCountries(countries: List[Country]): ConnectionIO[Int] =
-      Update[Country](s"insert into country (code, name, population, gnp) values (?,?,?,?)").updateMany(countries)
+      Update[Country]("insert into country (code, name, population, gnp) values (?,?,?,?)")
+        .updateMany(countries)
 
-    override val before = 
-      super.before <* createCountryTable <* insertCountries(countries)
+    implicit val beforeActions = createCountryTable <* insertCountries(countries)
 
+    // Transactor for single-use in-memory databases pre-populated with test data.
+    val xa = new CustomTransactor
   }
 
+  object PersonTable {
+
+    val createPersonTable: ConnectionIO[Int] =
+      sql"""
+          CREATE TABLE IF NOT EXISTS person (
+          id   IDENTITY,
+          name VARCHAR NOT NULL UNIQUE,
+          age  INT
+          )
+       """.update.run
+
+    implicit val beforeActions = createPersonTable
+
+    val xa = new CustomTransactor
+  }
 }

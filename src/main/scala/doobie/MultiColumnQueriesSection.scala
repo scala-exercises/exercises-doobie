@@ -1,6 +1,6 @@
 package doobie
 
-import doobie.DoobieUtils._
+import doobie.DoobieUtils.CountryTable._
 import doobie.Model._
 import doobie.imports._
 import org.scalaexercises.definitions.Section

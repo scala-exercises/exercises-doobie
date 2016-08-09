@@ -18,6 +18,7 @@ object DoobieLibrary extends Library {
     SelectingDataSection,
     MultiColumnQueriesSection,
     ParameterizedQueriesSection,
-    UpdatesSection
+    UpdatesSection,
+    ErrorHandlingSection
   )
 }
