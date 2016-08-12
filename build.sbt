@@ -6,7 +6,7 @@ lazy val doobie = (project in file("."))
     name         := "exercises-doobie",
     scalaVersion := "2.11.8",
     parallelExecution in Test := false,
-    version := "0.2.2-SNAPSHOT",
+    version := "0.2.3-SNAPSHOT",
     resolvers ++= Seq(
       Resolver.sonatypeRepo("snapshots"),
       Resolver.sonatypeRepo("releases")
