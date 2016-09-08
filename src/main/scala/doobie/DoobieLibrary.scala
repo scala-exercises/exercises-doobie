@@ -21,4 +21,6 @@ object DoobieLibrary extends Library {
     UpdatesSection,
     ErrorHandlingSection
   )
+
+  override def logoPath = "doobie"
 }
