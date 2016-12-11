@@ -23,18 +23,18 @@ import scalaz._, Scalaz._
   *
   * {{{
   * val drop: Update0 =
-  * sql"""
-  * DROP TABLE IF EXISTS person
-  * """.update
+  *   sql"""
+  *   DROP TABLE IF EXISTS person
+  *   """.update
   *
   * val create: Update0 =
-  * sql"""
-  * CREATE TABLE person (
-  * id   SERIAL,
-  * name VARCHAR NOT NULL UNIQUE,
-  * age  SMALLINT
-  * )
-  * """.update
+  *   sql"""
+  *   CREATE TABLE person (
+  *   id   SERIAL,
+  *   name VARCHAR NOT NULL UNIQUE,
+  *   age  SMALLINT
+  *   )
+  *   """.update
   * }}}
   *
   * We can compose these and run them together.
