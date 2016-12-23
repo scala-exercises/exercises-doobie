@@ -24,16 +24,16 @@ import scalaz._, Scalaz._
   * {{{
   * val drop: Update0 =
   * sql"""
-  * DROP TABLE IF EXISTS person
+  *   DROP TABLE IF EXISTS person
   * """.update
   *
   * val create: Update0 =
   * sql"""
-  * CREATE TABLE person (
-  * id   SERIAL,
-  * name VARCHAR NOT NULL UNIQUE,
-  * age  SMALLINT
-  * )
+  *   CREATE TABLE person (
+  *     id   SERIAL,
+  *     name VARCHAR NOT NULL UNIQUE,
+  *     age  SMALLINT
+  *   )
   * """.update
   * }}}
   *
@@ -47,8 +47,8 @@ import scalaz._, Scalaz._
   * constructs an `Update0` that inserts a row into the `person` table.
   *
   * {{{
-  * def insert1(name: String, age: Option[Short]): Update0 =
-  * sql"insert into person (name, age) values ($name, $age)".update
+  *   def insert1(name: String, age: Option[Short]): Update0 =
+  *     sql"insert into person (name, age) values ($name, $age)".update
   * }}}
   *
   * @param name inserting_and_updating
