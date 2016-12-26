@@ -10,7 +10,7 @@ import scalaz._
 
 /**
   * ==About Exceptions==
-  * '''doobie''' allow exceptions to propagate and escape unless they are handled explicitly
+  * '''doobie''' allows exceptions to propagate and escape unless they are handled explicitly
   * (exactly as `IO` and `Task` work). This means when a '''doobie''' action (transformed to some
   * target monad) is executed, exceptions can escape.
   *
@@ -59,7 +59,7 @@ import scalaz._
 object ErrorHandlingSection extends FlatSpec with Matchers with Section {
 
   /**
-    * Let's do some exercises where errors will happen and see how deal with them.
+    * Let's do some exercises where errors will happen and see how to deal with them.
     *
     * We're going to work with `person` table again, where the `name` column is marked as being
     * unique.
