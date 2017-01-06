@@ -85,7 +85,7 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
         .query[String]
         .option
         .transact(xa)
-        .run
+        .unsafePerformIO()
 
     maybeCountryName should be(res0)
   }
@@ -101,7 +101,7 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
         .query[String]
         .list
         .transact(xa)
-        .run
+        .unsafePerformIO()
 
     countryNames.head should be(res0)
   }
@@ -125,7 +125,7 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
         .take(3)
         .list
         .transact(xa)
-        .run
+        .unsafePerformIO()
 
     countryNames.size should be(res0)
   }
