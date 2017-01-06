@@ -5,7 +5,6 @@ import doobie.Model._
 import doobie.imports._
 import org.scalaexercises.definitions.Section
 import org.scalatest.{FlatSpec, Matchers}
-import shapeless.record._
 import shapeless.{::, HNil}
 
 /**
@@ -40,7 +39,7 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
         .query[(String, Int, Option[Double])]
         .unique
         .transact(xa)
-        .run
+        .unsafePerformIO()
 
     gnp should be(res0)
   }
@@ -59,7 +58,7 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
         .query[CountryHListType]
         .unique
         .transact(xa)
-        .run
+        .unsafePerformIO()
 
     hlist.head should be(res0)
   }
@@ -68,7 +67,8 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
     * And with a shapeless record:
     */
   def selectMultipleColumnsUsingRecord(res0: Int) = {
-
+    import shapeless.record._ 
+   
     type Rec = Record.`'name -> String, 'pop -> Int, 'gnp -> Option[Double]`.T
 
     val record: Rec =
@@ -76,7 +76,7 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
         .query[Rec]
         .unique
         .transact(xa)
-        .run
+        .unsafePerformIO()
 
     record('pop) should be(res0)
   }
@@ -95,7 +95,7 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
         .query[Country]
         .unique
         .transact(xa)
-        .run
+        .unsafePerformIO()
 
     country.code should be(res0)
   }
@@ -117,7 +117,7 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
         .query[(Code, CountryInfo)]
         .unique
         .transact(xa)
-        .run
+        .unsafePerformIO()
 
     country.name should be(res0)
   }
@@ -135,7 +135,7 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
         .query[(Code, CountryInfo)]
         .list
         .transact(xa)
-        .run
+        .unsafePerformIO()
         .toMap
 
     countriesMap.getOrElse(Code("DEU"), notFoundCountry).name should be(res0)
