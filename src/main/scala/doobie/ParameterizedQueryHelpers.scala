@@ -1,3 +1,8 @@
+/*
+ * scala-exercises - exercises-doobie
+ * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ */
+
 package doobie
 
 import doobie.Model.Country
@@ -15,8 +20,12 @@ object ParameterizedQueryHelpers {
       .query[Country]
 
   def populationIn(range: Range, codes: NonEmptyList[String]) = {
-    implicit val codesParam = Param.many(codes)
-    sql"select code, name, population, gnp from country where population > ${range.min} and population < ${range.max} and code in (${codes: codes.type}) order by population asc"
-      .query[Country]
+    val q = fr"""
+    select code, name, population, gnp
+    from country
+    where population > ${range.min}
+    and   population < ${range.max}
+    and   """ ++ Fragments.in(fr"code", codes) // code IN (...)
+    q.query[Country]
   }
 }

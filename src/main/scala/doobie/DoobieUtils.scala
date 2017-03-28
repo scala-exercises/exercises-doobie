@@ -1,9 +1,14 @@
+/*
+ * scala-exercises - exercises-doobie
+ * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ */
+
 package doobie
 
 import java.sql.Connection
 
 import doobie.Model._
-import doobie.free.{ drivermanager => FD }
+import doobie.free.{drivermanager => FD}
 import doobie.imports._
 
 import scalaz.concurrent.Task
