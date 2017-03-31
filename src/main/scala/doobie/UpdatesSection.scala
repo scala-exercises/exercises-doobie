@@ -19,12 +19,12 @@ import scalaz._, Scalaz._
  *
  * ==Data Definition==
  * It is uncommon to define database structures at runtime, but '''doobie''' handles it just fine
- * and treats such operations like any other kind of update. And it happens to be useful here!.
+ * and treats such operations like any other kind of update. And it happens to be useful here!
  *
  * Let’s create a new table, which we will use for the exercises to follow. This looks a lot like
  * our prior usage of the `sql` interpolator, but this time we’re using `update` rather than
  * `query`. The `.run` method gives a `ConnectionIO[Int]` that yields the total number of rows
- * modified
+ * modified.
  *
  * {{{
  * val drop: Update0 =
