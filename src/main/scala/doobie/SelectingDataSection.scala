@@ -36,7 +36,7 @@ import org.scalatest.{FlatSpec, Matchers}
  *
  * == How to select data ==
  *
- * As we commented in the previous section, the `sql` string interpolator allow us to create a
+ * As we commented in the previous section, the `sql` string interpolator allows us to create a
  * query to select data from the database.
  *
  * For instance, `sql"select name from country".query[String]` defines a `Query0[String]`, which
