@@ -115,6 +115,7 @@ object ParameterizedQueriesSection extends FlatSpec with Matchers with Section {
    *       where population > ${range.min}
    *       and   population < ${range.max}
    *       and   code in (${codes : codes.type})
+   *       order by population asc
    *     """.query[Country]
    *   }
    * }}}
