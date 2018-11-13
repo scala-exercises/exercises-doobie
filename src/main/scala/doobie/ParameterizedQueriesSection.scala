@@ -104,28 +104,21 @@ object ParameterizedQueriesSection extends FlatSpec with Matchers with Section {
    *
    * A common irritant when dealing with SQL literals is the desire to inline a sequence of
    * arguments into an IN clause, but SQL does not support this notion (nor does JDBC do anything
-   * to assist). So as of version 0.2.3 doobie provides support in the form of some slightly
-   * inconvenient machinery.
+   * to assist). '''doobie''' supports this via _statement fragments_.
    * {{{
    *   def populationIn(range: Range, codes: NonEmptyList[String]) = {
    *     implicit val codesParam = Param.many(codes)
    *     sql"""
-   *       select code, name, population, gnp
-   *       from country
-   *       where population > ${range.min}
-   *       and   population < ${range.max}
-   *       and   code in (${codes : codes.type})
-   *       order by population asc
+   *     select code, name, population, gnp
+   *     from country
+   *     where population > ${range.min}
+   *     and   population < ${range.max}
+   *     and   """ ++ Fragments.in(fr"code", codes)
    *     """.query[Country]
    *   }
    * }}}
    *
-   * There are a few things to notice here:
    *  - The `IN` clause must be non-empty, so `codes` is a `NonEmptyList`.
-   *  - We must derive a `Param` instance for the singleton type of `codes`, which we do via
-   *  `Param.many`. This derivation is legal for any `F[A]` given `Foldable1[F]` and `Atom[A]`. You
-   *  can have any number of `IN` arguments but each must have its own derived `Param` instance.
-   *  - When interpolating `codes` we must explicitly ascribe its singleton type `codes.type`.
    */
   def dealingWithInClause(res0: String, res1: String) = {
 
