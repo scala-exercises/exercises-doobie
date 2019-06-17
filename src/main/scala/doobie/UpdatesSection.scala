@@ -210,7 +210,7 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
    * By using an `Update` directly we can apply many sets of arguments to the same statement, and
    * execute it as a single batch operation.
    *
-   * - `updateMany` will return the updated of affected rows
+   * - `updateMany` will return the number of affected rows
    *
    * - For databases that support it (such as PostgreSQL) we can use `updateManyWithGeneratedKeys`
    * to return a stream of updated rows.
