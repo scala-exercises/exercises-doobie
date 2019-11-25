@@ -1,19 +1,20 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobie_lib
 
-import org.scalacheck.Shapeless._
-import doobie.Model.CountryInfo
+import org.scalacheck.ScalacheckShapeless._
+import Model.CountryInfo
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalaexercises.Test
-import org.scalatest.Spec
-import org.scalatest.prop.Checkers
+import org.scalatest.refspec.RefSpec
+import org.scalatestplus.scalacheck.Checkers
 import shapeless.HNil
 
-class MultiColumnQueriesSectionSpec extends Spec with Checkers {
+class MultiColumnQueriesSectionSpec extends RefSpec with Checkers {
 
   implicit val countryInfoArbitrary: Arbitrary[CountryInfo] = Arbitrary {
     for {

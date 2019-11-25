@@ -1,18 +1,16 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobie_lib
 
-import doobie.DoobieUtils.CountryTable._
-import doobie.Model._
-import doobie.ParameterizedQueryHelpers._
-import doobie.imports._
+import cats.data.NonEmptyList
+import doobie_lib.DoobieUtils.CountryTable._
+import doobie_lib.ParameterizedQueryHelpers._
 import org.scalaexercises.definitions.Section
 import org.scalatest.{FlatSpec, Matchers}
-
-import scalaz.NonEmptyList
 
 /**
  * Previously we have worked with static SQL queries where the values used to filter data were
@@ -56,9 +54,8 @@ object ParameterizedQueriesSection extends FlatSpec with Matchers with Section {
    */
   def addingAParameter(res0: String, res1: String) = {
 
-    val countriesName = biggerThan(75000000).list
-      .transact(xa)
-      .run
+    val countriesName = databaseBlock(biggerThan(75000000).to[List])
+      .unsafeRunSync()
       .map(_.name)
 
     countriesName should be(List(res0, res1))
@@ -69,8 +66,8 @@ object ParameterizedQueriesSection extends FlatSpec with Matchers with Section {
    * but actually we’re constructing a proper parameterized PreparedStatement, and the minProp
    * value is ultimately set via a call to setInt
    *
-   * '''doobie''' allows you to interpolate values of any type with a `Atom` instance, which
-   * includes:
+   * '''doobie''' allows you to interpolate values of any type (and options thereof) with a `Put`
+   * instance, which includes:
    *  - any JVM type that has a target mapping defined by the JDBC specification,
    *  - vendor-specific types defined by extension packages,
    *  - custom column types that you define, and
@@ -91,9 +88,8 @@ object ParameterizedQueriesSection extends FlatSpec with Matchers with Section {
    */
   def addingMultipleParameters(res0: String, res1: String, res2: String) = {
 
-    val countriesName = populationIn(25000000 to 75000000).list
-      .transact(xa)
-      .run
+    val countriesName = databaseBlock(populationIn(25000000 to 75000000).to[List])
+      .unsafeRunSync()
       .map(_.name)
 
     countriesName should be(List(res0, res1, res2))
@@ -104,34 +100,27 @@ object ParameterizedQueriesSection extends FlatSpec with Matchers with Section {
    *
    * A common irritant when dealing with SQL literals is the desire to inline a sequence of
    * arguments into an IN clause, but SQL does not support this notion (nor does JDBC do anything
-   * to assist). So as of version 0.2.3 doobie provides support in the form of some slightly
-   * inconvenient machinery.
+   * to assist). doobie supports this via statement fragments.
    * {{{
    *   def populationIn(range: Range, codes: NonEmptyList[String]) = {
-   *     implicit val codesParam = Param.many(codes)
-   *     sql"""
-   *       select code, name, population, gnp
-   *       from country
-   *       where population > ${range.min}
-   *       and   population < ${range.max}
-   *       and   code in (${codes : codes.type})
-   *       order by population asc
-   *     """.query[Country]
+   *     val q = fr"""
+   *        select code, name, population, gnp
+   *        from country
+   *        where population > ${range.min}
+   *        and   population < ${range.max}
+   *        and   """ ++ Fragments.in(fr"code", codes) // code IN (...)
+   *     q.query[Country]
    *   }
    * }}}
    *
-   * There are a few things to notice here:
-   *  - The `IN` clause must be non-empty, so `codes` is a `NonEmptyList`.
-   *  - We must derive a `Param` instance for the singleton type of `codes`, which we do via
-   *  `Param.many`. This derivation is legal for any `F[A]` given `Foldable1[F]` and `Atom[A]`. You
-   *  can have any number of `IN` arguments but each must have its own derived `Param` instance.
-   *  - When interpolating `codes` we must explicitly ascribe its singleton type `codes.type`.
+   * Note that the `IN` clause must be non-empty, so `codes` is a `NonEmptyList`.
    */
   def dealingWithInClause(res0: String, res1: String) = {
 
-    val countriesName = populationIn(25000000 to 75000000, NonEmptyList("ESP", "USA", "FRA")).list
-      .transact(xa)
-      .run
+    val countriesName = databaseBlock(
+      populationIn(25000000 to 75000000, NonEmptyList.of("ESP", "USA", "FRA"))
+        .to[List])
+      .unsafeRunSync()
       .map(_.name)
 
     countriesName should be(List(res0, res1))
