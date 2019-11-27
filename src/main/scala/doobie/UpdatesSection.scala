@@ -1,17 +1,19 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobielib
 
-import doobie.DoobieUtils.PersonTable._
-import doobie.UpdatesSectionHelpers._
-import doobie.imports._
+import cats.implicits._
+import DoobieUtils.PersonTable._
+import UpdatesSectionHelpers._
+import doobie._
+import doobie.implicits._
+import UpdatesSectionHelpers.Person
 import org.scalaexercises.definitions.Section
 import org.scalatest.{FlatSpec, Matchers}
-
-import scalaz._, Scalaz._
 
 /**
  * In this section we examine operations that modify data in the database, and ways to retrieve the
@@ -44,7 +46,8 @@ import scalaz._, Scalaz._
  *
  * We can compose these and run them together.
  * {{{
- *   (drop.run *> create.run).transact(xa).unsafePerformSync
+ *   (drop, create).mapN(_ + _).transact(xa).unsafeRunSync
+ *    // res0: Int = 0
  * }}}
  *
  * ==Inserting==
@@ -62,13 +65,18 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
 
   /**
    * Let's insert a new row by using the recently defined `insert1` method.
+   *
+   * To make simpler the code we built a method which prepares the database, makes the query and transacts
+   * it all:
+   *
+   * {{{
+   * def transactorBlock[A](f: => ConnectionIO[A]): IO[A] =
+   *    transactor.use((createPersonTable *> f).transact[IO])
+   * }}}
    */
   def insertOneRow(res0: Int) = {
 
-    val insertedRows =
-      insert1("John", Option(35)).run
-        .transact(xa)
-        .run
+    val insertedRows = transactorBlock(insert1("John", Option(35)).run).unsafeRunSync()
 
     insertedRows should be(res0)
   }
@@ -85,9 +93,7 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
       row3 <- insert1("John", Option(17)).run
     } yield row1 + row2 + row3
 
-    val insertedRows = rows
-      .transact(xa)
-      .run
+    val insertedRows = transactorBlock(rows).unsafeRunSync()
 
     insertedRows should be(res0)
   }
@@ -102,9 +108,8 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
 
     val insertedOtherPerson = insert1("Bob", None).run
 
-    val insertedRows = (insertedOnePerson |@| insertedOtherPerson)(_ + _)
-      .transact(xa)
-      .run
+    val insertedRows =
+      transactorBlock((insertedOnePerson, insertedOtherPerson).mapN(_ + _)).unsafeRunSync()
 
     insertedRows should be(res0)
   }
@@ -118,10 +123,8 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
     val people =
       List(("Alice", Option(12)), ("Bob", None), ("John", Option(17)), ("Mary", Option(16)))
 
-    val insertedRows = people
-      .traverse(item => (insert1 _).tupled(item).run)
-      .transact(xa)
-      .run
+    val insertedRows =
+      transactorBlock(people.traverse(item => (insert1 _).tupled(item).run)).unsafeRunSync()
 
     insertedRows.sum should be(res0)
   }
@@ -139,9 +142,7 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
       person       <- sql"select id, name, age from person where name = 'Alice'".query[Person].unique
     } yield (insertedRows, updatedRows, person)
 
-    val (insertedRows, updatedRows, person) = result
-      .transact(xa)
-      .run
+    val (insertedRows, updatedRows, person) = transactorBlock(result).unsafeRunSync()
 
     insertedRows should be(res0)
     updatedRows should be(res1)
@@ -178,9 +179,7 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
         p <- sql"select id, name, age from person where id = $id".query[Person].unique
       } yield p
 
-    val person = insert2_H2("Ramone", Option(42))
-      .transact(xa)
-      .run
+    val person = transactorBlock(insert2_H2("Ramone", Option(42))).unsafeRunSync()
 
     person.name should be(res0)
     person.age should be(Option(res1))
@@ -201,19 +200,22 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
    * exception will be thrown), and requires a list of columns to return.
    *
    * This mechanism also works for updates, for databases that support it. In the case of multiple
-   * row updates we use `withGeneratedKeys` and get a Process[ConnectionIO, Person] back.
+   * row updates we use `withGeneratedKeys` and get a `Stream[ConnectionIO, Person]` back.
+   *
+   * {{{
+   *   val up = {
+   *   sql"update person set age = age + 1 where age is not null"
+   *     .update
+   *     .withGeneratedKeys[Person]("id", "name", "age")
+   *   }
+   * }}}
    *
    * == Batch Updates ==
    * '''doobie''' supports batch updating via the `updateMany` and `updateManyWithGeneratedKeys`
-   * operations on the `Update` data type.
-   *
-   * By using an `Update` directly we can apply many sets of arguments to the same statement, and
-   * execute it as a single batch operation.
-   *
-   * - `updateMany` will return the updated of affected rows
-   *
-   * - For databases that support it (such as PostgreSQL) we can use `updateManyWithGeneratedKeys`
-   * to return a stream of updated rows.
+   * operations on the `Update` data type. An `Update0`, which is the type of an sql"...".update
+   * expression, represents a parameterized statement where the arguments are known. An `Update[A]`
+   * is more general, and represents a parameterized statement where the composite argument of
+   * type `A` is not known.
    */
   def batchUpdates(res0: Int) = {
     type PersonInfo = (String, Option[Short])
@@ -226,9 +228,7 @@ object UpdatesSection extends FlatSpec with Matchers with Section {
     // Some rows to insert
     val data = List[PersonInfo](("Frank", Some(12)), ("Daddy", None))
 
-    val insertedRows = insertMany(data)
-      .transact(xa)
-      .run
+    val insertedRows = transactorBlock(insertMany(data)).unsafeRunSync()
 
     insertedRows should be(res0)
   }

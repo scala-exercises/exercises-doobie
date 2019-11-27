@@ -1,4 +1,5 @@
-val scalaExercisesV = "0.4.0-SNAPSHOT"
+import ProjectPlugin.autoImport._
+val scalaExercisesV = "0.5.0-SNAPSHOT"
 
 def dep(artifactId: String) = "org.scala-exercises" %% artifactId % scalaExercisesV
 
@@ -9,11 +10,13 @@ lazy val doobie = (project in file("."))
     libraryDependencies ++= Seq(
       dep("exercise-compiler"),
       dep("definitions"),
-      %%("doobie-core"),
-      %%("doobie-h2"),
-      %%("scalatest"),
-      %%("scalacheck"),
-      %%("scheckShapeless")
+      %%("doobie-core", V.doobie),
+      %%("doobie-h2", V.doobie),
+      %%("cats-core", V.cats),
+      %%("shapeless", V.shapeless),
+      %%("scalatest", V.scalatest),
+      %%("scalacheck", V.scalacheck),
+      "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % V.scalacheckShapeless
     )
   )
 

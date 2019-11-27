@@ -1,17 +1,19 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobielib
 
-import doobie.DoobieUtils.CountryTable._
-import doobie.Model._
-import doobie.imports._
+import doobie.implicits._
+import DoobieUtils.CountryTable._
+import Model._
 import org.scalaexercises.definitions.Section
 import org.scalatest.{FlatSpec, Matchers}
+import shapeless._
 import shapeless.record._
-import shapeless.{::, HNil}
+import shapeless.syntax.singleton._
 
 /**
  * So far, we have constructed queries that return single-column results. These results were mapped
@@ -30,6 +32,14 @@ import shapeless.{::, HNil}
  * "USA"  "United States of America"  278357000    8510700.00
  * }}}
  *
+ * To make simpler the code we built a method which prepares the database, makes the query and transacts
+ * it all:
+ *
+ * {{{
+ * def transactorBlock[A](f: => ConnectionIO[A]): IO[A] =
+ *    transactor.use((createCountryTable *> insertCountries(countries) *> f).transact[IO])
+ * }}}
+ *
  * @param name multi_column_queries
  */
 object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
@@ -41,11 +51,11 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
   def selectMultipleColumnsUsingTuple(res0: Option[Double]) = {
 
     val (name, population, gnp) =
-      sql"select name, population, gnp from country where code = 'ESP'"
-        .query[(String, Int, Option[Double])]
-        .unique
-        .transact(xa)
-        .run
+      transactorBlock {
+        sql"select name, population, gnp from country where code = 'ESP'"
+          .query[(String, Int, Option[Double])]
+          .unique
+      }.unsafeRunSync()
 
     gnp should be(res0)
   }
@@ -60,11 +70,11 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
     type CountryHListType = String :: Int :: Option[Double] :: HNil
 
     val hlist: CountryHListType =
-      sql"select name, population, gnp from country where code = 'FRA'"
-        .query[CountryHListType]
-        .unique
-        .transact(xa)
-        .run
+      transactorBlock {
+        sql"select name, population, gnp from country where code = 'FRA'"
+          .query[CountryHListType]
+          .unique
+      }.unsafeRunSync()
 
     hlist.head should be(res0)
   }
@@ -77,11 +87,11 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
     type Rec = Record.`'name -> String, 'pop -> Int, 'gnp -> Option[Double]`.T
 
     val record: Rec =
-      sql"select name, population, gnp from country where code = 'USA'"
-        .query[Rec]
-        .unique
-        .transact(xa)
-        .run
+      transactorBlock {
+        sql"select name, population, gnp from country where code = 'USA'"
+          .query[Rec]
+          .unique
+      }.unsafeRunSync()
 
     record('pop) should be(res0)
   }
@@ -96,11 +106,11 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
   def selectMultipleColumnsUsingCaseClass(res0: String) = {
 
     val country =
-      sql"select code, name, population, gnp from country where name = 'United Kingdom'"
-        .query[Country]
-        .unique
-        .transact(xa)
-        .run
+      transactorBlock {
+        sql"select code, name, population, gnp from country where name = 'United Kingdom'"
+          .query[Country]
+          .unique
+      }.unsafeRunSync()
 
     country.code should be(res0)
   }
@@ -118,11 +128,11 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
   def selectMultipleColumnsUsingNestedCaseClass(res0: String) = {
 
     val (code, country) =
-      sql"select code, name, population, gnp from country where code = 'ESP'"
-        .query[(Code, CountryInfo)]
-        .unique
-        .transact(xa)
-        .run
+      transactorBlock {
+        sql"select code, name, population, gnp from country where code = 'ESP'"
+          .query[(Code, CountryInfo)]
+          .unique
+      }.unsafeRunSync()
 
     country.name should be(res0)
   }
@@ -136,12 +146,11 @@ object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
     val notFoundCountry = CountryInfo("Not Found", 0, None)
 
     val countriesMap: Map[Code, CountryInfo] =
-      sql"select code, name, population, gnp from country"
-        .query[(Code, CountryInfo)]
-        .list
-        .transact(xa)
-        .run
-        .toMap
+      transactorBlock {
+        sql"select code, name, population, gnp from country"
+          .query[(Code, CountryInfo)]
+          .to[List]
+      }.unsafeRunSync().toMap
 
     countriesMap.getOrElse(Code("DEU"), notFoundCountry).name should be(res0)
     countriesMap.get(Code("ITA")) should be(res1)

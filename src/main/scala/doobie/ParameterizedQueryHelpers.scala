@@ -1,13 +1,15 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobielib
 
-import doobie.Model.Country
-import doobie.imports._
-import scalaz.NonEmptyList
+import cats.data._
+import doobie._
+import doobie.implicits._
+import Model.Country
 
 object ParameterizedQueryHelpers {
 

@@ -1,12 +1,13 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobielib
 
-import doobie.DoobieUtils.CountryTable._
-import doobie.imports._
+import doobie.implicits._
+import DoobieUtils.CountryTable._
 import org.scalaexercises.definitions.Section
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -42,22 +43,12 @@ import org.scalatest.{FlatSpec, Matchers}
  * For instance, `sql"select name from country".query[String]` defines a `Query0[String]`, which
  * is a one-column query that maps each returned row to a String.
  *
- * Once we generate this query, we could use several convenience methods to stream the results:
- *  - `.list`, which accumulates the results to a `List`, in this case yielding a
- * `ConnectionIO[List[String]]`.
- *  - `.vector`, which accumulates to a `Vector`
- *  - `.to[Coll]`, which accumulates to a type `Coll`, given an implicit `CanBuildFrom`. This works
- * with Scala standard library collections.
- *  - `.accumulate[M[_]: MonadPlus]` which accumulates to a universally quantified monoid `M`.
- * This works with many scalaz collections, as well as standard library collections with
- * `MonadPlus` instances.
- *  - `.unique` which returns a single value, raising an exception if there is not exactly
- * one row returned.
- *  - `.option` which returns an Option, raising an exception if there is more than
- * one row returned.
- *  - `.nel` which returns an `NonEmptyList`, raising an exception if there are no rows returned.
- *  - See the Scaladoc for [[http://tpolecat.github.io/doc/doobie/0.3.0/api/index.html#doobie.util.query$$Query0 `Query0`]]
- * for more information on these and other methods.
+ * `.to[List]` is a convenience method that accumulates rows into a `List`, in this case yielding a
+ * `ConnectionIO[List[String]]`. It works with any collection type that has a `CanBuildFrom`. Similar methods are:
+ * - `.unique` which returns a single value, raising an exception if there is not exactly one row returned.
+ * - `.option` which returns an `Option`, raising an exception if there is more than one row returned.
+ * - `.nel` which returns a `NonEmptyList`, raising an exception if there are no rows returned.
+ * See the Scaladoc for Query0 for more information on these and other methods.
  *
  * @param name selecting_data
  */
@@ -66,16 +57,21 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
   /**
    * == Getting info about the countries ==
    *
+   * To make simpler the code we built a method which prepares the database, makes the query and transacts
+   * it all:
+   *
+   * {{{
+   * def transactorBlock[A](f: => ConnectionIO[A]): IO[A] =
+   *       transactor.use((createCountryTable *> insertCountries(countries) *> f).transact[IO])
+   * }}}
+   *
    * We can use the `unique` method if we expect the query to return only one row
    */
   def selectUniqueCountryName(res0: String) = {
 
     val countryName =
-      sql"select name from country where code = 'ESP'"
-        .query[String]
-        .unique
-        .transact(xa)
-        .run
+      transactorBlock(sql"select name from COUNTRY where code = 'ESP'".query[String].unique)
+        .unsafeRunSync()
 
     countryName should be(res0)
   }
@@ -86,11 +82,8 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
   def selectOptionalCountryName(res0: Option[String]) = {
 
     val maybeCountryName =
-      sql"select name from country where code = 'ITA'"
-        .query[String]
-        .option
-        .transact(xa)
-        .run
+      transactorBlock(sql"select name from country where code = 'ITA'".query[String].option)
+        .unsafeRunSync()
 
     maybeCountryName should be(res0)
   }
@@ -102,11 +95,9 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
   def selectCountryNameList(res0: String) = {
 
     val countryNames =
-      sql"select name from country order by name"
-        .query[String]
-        .list
-        .transact(xa)
-        .run
+      transactorBlock {
+        sql"select name from country order by name".query[String].to[List]
+      }.unsafeRunSync()
 
     countryNames.head should be(res0)
   }
@@ -115,22 +106,17 @@ object SelectingDataSection extends FlatSpec with Matchers with Section {
    * This is ok, but there’s not much point reading all the results from the database when we only
    * want the first few rows.
    *
-   * A different approach could be to use the `process` that  gives us a
-   * `scalaz.stream.Process[ConnectionIO, String]` which emits the results as they arrive from the
-   * database. By applying a limit with `take` we instruct the process to shut everything down
-   * (and clean everything up) after the required number of elements have been emitted. This is
-   * much more efficient than pulling all the rows of the table and then throwing most of them away.
+   * The difference here is that stream gives us an fs2 Stream[ConnectionIO, String] that emits
+   * rows as they arrive from the database. By applying take(5) we instruct the stream to shut
+   * everything down (and clean everything up) after five elements have been emitted. This is
+   * much more efficient than pulling all 239 rows and then throwing most of them away.
    */
   def selectCountryNameListByUsingProcess(res0: Int) = {
 
     val countryNames =
-      sql"select name from country order by name"
-        .query[String]
-        .process
-        .take(3)
-        .list
-        .transact(xa)
-        .run
+      transactorBlock {
+        sql"select name from country order by name".query[String].stream.take(3).compile.toList
+      }.unsafeRunSync()
 
     countryNames.size should be(res0)
   }

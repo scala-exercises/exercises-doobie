@@ -1,17 +1,18 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobielib
 
-import doobie.DoobieUtils.CountryTable._
-import doobie.imports._
+import cats.effect.IO
+import cats.implicits._
+import DoobieUtils._
+import doobie.implicits._
+import doobie._
 import org.scalaexercises.definitions.Section
 import org.scalatest._
-
-import scalaz.Scalaz._
-import scalaz._
 
 /** ==Introduction==
  * doobie is a monadic API that provides a number of data types that all work the same way
@@ -27,48 +28,85 @@ import scalaz._
  *
  * ==First programs==
  *
- * {{{
- * import doobie.imports._
- * import scalaz._, Scalaz._
- * import scalaz.concurrent.Task
- * }}}
- *
- * So let’s start with a ConnectionIO program that simply returns a constant.
+ * Before we can use doobie we need to import some symbols. We will use package imports here as a
+ * convenience; this will give us the most commonly-used symbols when working with the high-level
+ * API.
  *
  * {{{
- * val program = 42.point[ConnectionIO]
- * program: ConnectionIO[Int] = Return(42)
+ * import doobie._
+ * import doobie.implicits._
  * }}}
  *
- * This is a perfectly respectable doobie program, but we can’t run it as-is; we need a Connection
- * first. There are several ways to do this, but here let’s use a Transactor.
+ * Let’s also bring in Cats.
  *
  * {{{
- * val xa = DriverManagerTransactor[Task](
- * driver = "org.postgresql.Driver",
- * url = "jdbc:postgresql:world",
- * user = "postgres",
- * pass = ""
- * )
+ * import cats._
+ * import cats.effect._
+ * import cats.implicits._
  * }}}
  *
- * A Transactor is simply a structure that knows how to connect to a database, hand out
- * connections, and clean them up; and with this knowledge it can transform ConnectionIO ~> Task,
- * which gives us something we can run. Specifically it gives us a Task that, when run, will
- * connect to the database and run our program in a single transaction.
+ * n the doobie high level API the most common types we will deal with have the form `ConnectionIO[A]`,
+ * specifying computations that take place in a context where a `java.sql.Connection` is available,
+ * ultimately producing a value of type `A`.
  *
- * The DriverManagerTransactor simply delegates to the java.sql.DriverManager to allocate
- * connections, which is fine for development but inefficient for production use.
+ * So let’s start with a `ConnectionIO` program that simply returns a constant.
+ *
+ * {{{
+ * val program1 = 42.pure[ConnectionIO]
+ * // program1: ConnectionIO[Int] = Pure(42)
+ * }}}
+ *
+ * This is a perfectly respectable doobie program, but we can’t run it as-is; we need a `Connection`
+ * first. There are several ways to do this, but here let’s use a `Transactor`.
+ *
+ * > Note: DriverManagerTransactors have the advantage of no connection pooling and configuration, so
+ * > are perfect for testing. The main disadvantage is that it is slower than pooling connection managers,
+ * > no provides upper bound for concurrent connections and executes blocking operations in an unbounded
+ * > pool of threads. The `doobie-hikari` add-on provides a `Transactor` implementation backed by a HikariCP
+ * > connection pool. The connection pool is a lifetime-managed object that must be shut down cleanly, so
+ * > it is managed as a Resource.
+ *
+ * {{{
+ * import doobie.hikari._
+ *
+ * // Resource yielding a transactor configured with a bounded connect EC and an unbounded
+ * // transaction EC. Everything will be closed and shut down cleanly after use.
+ * val transactor: Resource[IO, HikariTransactor[IO]] =
+ *  for {
+ *    ce <- ExecutionContexts.fixedThreadPool[IO] (32) // our connect EC
+ *    be <- Blocker[IO] // our blocking EC
+ *    xa <- HikariTransactor.newHikariTransactor[IO] (
+ *      "org.h2.Driver", // driver classname
+ *      "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", // connect URL
+ *      "sa", // username
+ *      "", // password
+ *      ce, // await connection here
+ *      be // execute JDBC operations here
+ *    )
+ *  } yield xa
+ * }}}
+ *
+ * A `Transactor` is a data type that knows how to connect to a database, hand out connections, and
+ * clean them up; and with this knowledge it can transform `ConnectionIO ~> IO`, which gives us a
+ * program we can run. Specifically it gives us an `IO` that, when run, will connect to the database
+ * and execute single transaction.
+ *
+ * We are using `cats.effect.IO` as our final effect type, but you can use any monad `M[_]` given
+ * `cats.effect.Async[M]`. See Using Your Own Target Monad at the end of this chapter for more details.
  *
  * @param name connecting_to_database
  */
-object ConnectingToDatabaseSection extends FlatSpec with Matchers with Section {
+object ConnectingToDatabaseSection
+    extends FlatSpec
+    with Matchers
+    with Section
+    with BeforeAndAfterAll {
 
   /**
-   * Right, so let’s do this.
+   * And here we go.
    */
   def constantValue(res0: Int) =
-    42.point[ConnectionIO].transact(xa).run should be(res0)
+    transactor.use(42.pure[ConnectionIO].transact[IO]).unsafeRunSync() should be(res0)
 
   /** We have computed a constant. It’s not very interesting because we never ask the database to
    * perform any work, but it’s a first step
@@ -79,9 +117,9 @@ object ConnectingToDatabaseSection extends FlatSpec with Matchers with Section {
    * a stream of Int values, and yield its one and only element.”
    */
   def constantValueFromDatabase(res0: Int) =
-    sql"select 42".query[Int].unique.transact(xa).run should be(res0)
+    transactor.use(sql"select 42".query[Int].unique.transact[IO]).unsafeRunSync() should be(res0)
 
-  /** What if we want to do more than one thing in a transaction? Easy! ConnectionIO is a monad,
+  /** What if we want to do more than one thing in a transaction? Easy! `ConnectionIO` is a monad,
    * so we can use a for comprehension to compose two smaller programs into one larger program.
    */
   def combineTwoPrograms(res0: (Int, Int)) = {
@@ -90,7 +128,7 @@ object ConnectingToDatabaseSection extends FlatSpec with Matchers with Section {
       b <- sql"select power(5, 2)".query[Int].unique
     } yield (a, b)
 
-    largerProgram.transact(xa).run should be(res0)
+    transactor.use(largerProgram.transact[IO]).unsafeRunSync() should be(res0)
   }
 
   /** The astute among you will note that we don’t actually need a monad to do this; an applicative
@@ -100,6 +138,7 @@ object ConnectingToDatabaseSection extends FlatSpec with Matchers with Section {
     val oneProgram     = sql"select 42".query[Int].unique
     val anotherProgram = sql"select power(5, 2)".query[Int].unique
 
-    (oneProgram |@| anotherProgram) { _ + _ }.transact(xa).run should be(res0)
+    transactor.use((oneProgram, anotherProgram).mapN(_ + _).transact[IO]).unsafeRunSync() should be(
+      res0)
   }
 }

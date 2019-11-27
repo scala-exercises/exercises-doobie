@@ -1,31 +1,34 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobielib
 
-import java.sql.Connection
-
-import doobie.Model._
-import doobie.free.{drivermanager => FD}
-import doobie.imports._
-
-import scalaz.concurrent.Task
-import scalaz._, Scalaz._
+import cats.effect._
+import cats.implicits._
+import doobie._
+import doobie.free.connection.ConnectionIO
+import doobie.h2.H2Transactor
+import doobie.implicits._
+import doobie.util.ExecutionContexts
+import Model._
 
 object DoobieUtils {
 
-  class CustomTransactor[B](implicit beforeActions: ConnectionIO[B]) extends Transactor[Task] {
-    val driver = "org.h2.Driver"
-    def url    = "jdbc:h2:mem:"
-    val user   = "sa"
-    val pass   = ""
+  implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
 
-    val connect: Task[Connection] =
-      Task.delay(Class.forName(driver)) *> FD.getConnection(url, user, pass).trans[Task]
+  val transactor: Resource[IO, H2Transactor[IO]] = {
+    def url  = "jdbc:h2:mem:"
+    val user = "sa"
+    val pass = ""
 
-    override val before = super.before <* beforeActions
+    for {
+      ec <- ExecutionContexts.fixedThreadPool[IO](1)
+      bc <- Blocker[IO]
+      xa <- H2Transactor.newH2Transactor[IO](url, user, pass, ec, bc)
+    } yield xa
   }
 
   object CountryTable {
@@ -44,10 +47,8 @@ object DoobieUtils {
       Update[Country]("insert into country (code, name, population, gnp) values (?,?,?,?)")
         .updateMany(countries)
 
-    implicit val beforeActions = createCountryTable <* insertCountries(countries)
-
-    // Transactor for single-use in-memory databases pre-populated with test data.
-    val xa = new CustomTransactor
+    def transactorBlock[A](f: => ConnectionIO[A]): IO[A] =
+      transactor.use((createCountryTable *> insertCountries(countries) *> f).transact[IO])
   }
 
   object PersonTable {
@@ -61,8 +62,7 @@ object DoobieUtils {
           )
        """.update.run
 
-    implicit val beforeActions = createPersonTable
-
-    val xa = new CustomTransactor
+    def transactorBlock[A](f: => ConnectionIO[A]) =
+      transactor.use((createPersonTable *> f).transact[IO])
   }
 }

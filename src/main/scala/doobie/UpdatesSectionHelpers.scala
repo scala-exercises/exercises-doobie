@@ -1,17 +1,13 @@
 /*
- * scala-exercises - exercises-doobie
- * Copyright (C) 2015-2016 47 Degrees, LLC. <http://www.47deg.com>
+ *  scala-exercises - exercises-doobie
+ *  Copyright (C) 2015-2019 47 Degrees, LLC. <http://www.47deg.com>
+ *
  */
 
-package doobie
+package doobielib
 
-import doobie.imports._
-import doobie.free.{drivermanager => FD}
-
-import java.sql.Connection
-
-import scalaz.concurrent.Task
-import scalaz._, Scalaz._
+import doobie._
+import doobie.implicits._
 
 object UpdatesSectionHelpers {
 
