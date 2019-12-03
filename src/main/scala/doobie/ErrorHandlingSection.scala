@@ -25,17 +25,18 @@ import org.scalatest.{FlatSpec, Matchers}
  *
  * There are three main types of exceptions that are likely to arise:
  *
- * 1. Various types of `IOException` can happen with any kind of I/O, and these exceptions tend to be unrecoverable.
+ * '''1.''' Various types of `IOException` can happen with any kind of I/O, and these exceptions tend to be
+ * unrecoverable.
  *
- * 2. Database exceptions, typically as a generic `SQLException` with a vendor-specific `SQLState` identifying the
+ * '''2.''' Database exceptions, typically as a generic `SQLException` with a vendor-specific `SQLState` identifying the
  * specific error, are raised for common situations such as key violations. Some vendors (PostgreSQL for instance)
  * publish a table of error codes, and in these cases doobie can provide a matching set of exception-handling
  * combinators. However in most cases the error codes must be passed down as folklore or discovered by
  * experimentation. There exist the XOPEN and SQL:2003 standards, but it seems that no vendor adheres closely to
  * these specifications. Some of these errors are recoverable and others aren’t.
  *
- * 3. doobie will raise an `InvariantViolation` in response to invalid type mappings, unknown JDBC constants returned
- * by drivers, observed `NULL` values, and other violations of invariants that doobie assumes. These exceptions
+ * '''3.''' doobie will raise an `InvariantViolation` in response to invalid type mappings, unknown JDBC constants
+ * returned by drivers, observed `NULL` values, and other violations of invariants that doobie assumes. These exceptions
  * indicate programmer error or driver non-compliance and are generally unrecoverable.
  *
  * ==MonadError and Derived Combinators==
