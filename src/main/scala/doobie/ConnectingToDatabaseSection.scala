@@ -45,7 +45,7 @@ import org.scalatest._
  * import cats.implicits._
  * }}}
  *
- * n the doobie high level API the most common types we will deal with have the form `ConnectionIO[A]`,
+ * In the doobie high level API the most common types we will deal with have the form `ConnectionIO[A]`,
  * specifying computations that take place in a context where a `java.sql.Connection` is available,
  * ultimately producing a value of type `A`.
  *
@@ -59,12 +59,12 @@ import org.scalatest._
  * This is a perfectly respectable doobie program, but we can’t run it as-is; we need a `Connection`
  * first. There are several ways to do this, but here let’s use a `Transactor`.
  *
- * > Note: DriverManagerTransactors have the advantage of no connection pooling and configuration, so
- * > are perfect for testing. The main disadvantage is that it is slower than pooling connection managers,
- * > no provides upper bound for concurrent connections and executes blocking operations in an unbounded
- * > pool of threads. The `doobie-hikari` add-on provides a `Transactor` implementation backed by a HikariCP
- * > connection pool. The connection pool is a lifetime-managed object that must be shut down cleanly, so
- * > it is managed as a Resource.
+ * '''Note''': DriverManagerTransactors have the advantage of no connection pooling and configuration, so
+ * are perfect for testing. The main disadvantage is that it is slower than pooling connection managers,
+ * no provides upper bound for concurrent connections and executes blocking operations in an unbounded
+ * pool of threads. The `doobie-hikari` add-on provides a `Transactor` implementation backed by a HikariCP
+ * connection pool. The connection pool is a lifetime-managed object that must be shut down cleanly, so
+ * it is managed as a Resource.
  *
  * {{{
  * import doobie.hikari._
