@@ -13,7 +13,8 @@ import doobie._
 import doobie.implicits._
 import UpdatesSectionHelpers.Person
 import org.scalaexercises.definitions.Section
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * In this section we examine operations that modify data in the database, and ways to retrieve the
@@ -61,7 +62,7 @@ import org.scalatest.{FlatSpec, Matchers}
  *
  * @param name inserting_and_updating
  */
-object UpdatesSection extends FlatSpec with Matchers with Section {
+object UpdatesSection extends AnyFlatSpec with Matchers with Section {
 
   /**
    * Let's insert a new row by using the recently defined `insert1` method.

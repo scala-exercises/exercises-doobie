@@ -12,7 +12,8 @@ import DoobieUtils._
 import doobie.implicits._
 import doobie._
 import org.scalaexercises.definitions.Section
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.flatspec.AnyFlatSpec
 
 /** ==Introduction==
  * doobie is a monadic API that provides a number of data types that all work the same way
@@ -96,11 +97,7 @@ import org.scalatest._
  *
  * @param name connecting_to_database
  */
-object ConnectingToDatabaseSection
-    extends FlatSpec
-    with Matchers
-    with Section
-    with BeforeAndAfterAll {
+object ConnectingToDatabaseSection extends AnyFlatSpec with Matchers with Section {
 
   /**
    * And here we go.

@@ -10,7 +10,8 @@ import doobie.implicits._
 import DoobieUtils.CountryTable._
 import Model._
 import org.scalaexercises.definitions.Section
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import shapeless._
 import shapeless.record._
 import shapeless.syntax.singleton._
@@ -42,7 +43,7 @@ import shapeless.syntax.singleton._
  *
  * @param name multi_column_queries
  */
-object MultiColumnQueriesSection extends FlatSpec with Matchers with Section {
+object MultiColumnQueriesSection extends AnyFlatSpec with Matchers with Section {
 
   /**
    * We can select multiple columns and map them to a tuple. The `gnp` column in our table is

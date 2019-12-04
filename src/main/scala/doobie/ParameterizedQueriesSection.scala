@@ -10,7 +10,8 @@ import cats.data.NonEmptyList
 import DoobieUtils.CountryTable._
 import ParameterizedQueryHelpers._
 import org.scalaexercises.definitions.Section
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * Previously we have worked with static SQL queries where the values used to filter data were
@@ -41,7 +42,7 @@ import org.scalatest.{FlatSpec, Matchers}
  *
  * @param name parameterized_queries
  */
-object ParameterizedQueriesSection extends FlatSpec with Matchers with Section {
+object ParameterizedQueriesSection extends AnyFlatSpec with Matchers with Section {
 
   /**
    * == Adding a Parameter ==
