@@ -9,7 +9,8 @@ package doobielib
 import doobie.implicits._
 import DoobieUtils.CountryTable._
 import org.scalaexercises.definitions.Section
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * We are going to construct some programs that retrieve data from the database and stream it back,
@@ -52,7 +53,7 @@ import org.scalatest.{FlatSpec, Matchers}
  *
  * @param name selecting_data
  */
-object SelectingDataSection extends FlatSpec with Matchers with Section {
+object SelectingDataSection extends AnyFlatSpec with Matchers with Section {
 
   /**
    * == Getting info about the countries ==

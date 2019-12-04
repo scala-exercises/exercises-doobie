@@ -11,7 +11,8 @@ import ErrorHandlingSectionHelpers._
 import doobie._
 import doobie.implicits._
 import org.scalaexercises.definitions.Section
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * ==About Exceptions==
@@ -79,7 +80,7 @@ import org.scalatest.{FlatSpec, Matchers}
  *
  * @param name error_handling
  **/
-object ErrorHandlingSection extends FlatSpec with Matchers with Section {
+object ErrorHandlingSection extends AnyFlatSpec with Matchers with Section {
 
   /**
    * Let's do some exercises where errors will happen and see how to deal with them.
