@@ -14,7 +14,6 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import shapeless._
 import shapeless.record._
-import shapeless.syntax.singleton._
 
 /**
  * So far, we have constructed queries that return single-column results. These results were mapped
@@ -94,7 +93,7 @@ object MultiColumnQueriesSection extends AnyFlatSpec with Matchers with Section 
           .unique
       }.unsafeRunSync()
 
-    record('pop) should be(res0)
+    record(Symbol("pop")) should be(res0)
   }
 
   /**

@@ -15,7 +15,7 @@ object ProjectPlugin extends AutoPlugin {
   object autoImport {
 
     lazy val V = new {
-      val scala212: String            = "2.12.10"
+      val scala213: String            = "2.13.1"
       val doobie: String              = "0.8.6"
       val cats: String                = "2.0.0"
       val shapeless: String           = "2.3.3"
@@ -41,7 +41,7 @@ object ProjectPlugin extends AutoPlugin {
         organizationEmail = "hello@47deg.com"
       ),
       orgLicenseSetting := ApacheLicense,
-      scalaVersion := V.scala212,
+      scalaVersion := V.scala213,
       scalaOrganization := "org.scala-lang",
       resolvers ++= Seq(
         Resolver.mavenLocal,
