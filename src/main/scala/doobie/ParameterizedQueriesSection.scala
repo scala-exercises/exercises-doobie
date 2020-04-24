@@ -127,8 +127,8 @@ object ParameterizedQueriesSection extends AnyFlatSpec with Matchers with Sectio
 
     val countriesName = transactorBlock(
       populationIn(25000000 to 75000000, NonEmptyList.of("ESP", "USA", "FRA"))
-        .to[List])
-      .unsafeRunSync()
+        .to[List]
+    ).unsafeRunSync()
       .map(_.name)
 
     countriesName should be(List(res0, res1))

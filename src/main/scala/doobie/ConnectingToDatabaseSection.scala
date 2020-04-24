@@ -136,6 +136,7 @@ object ConnectingToDatabaseSection extends AnyFlatSpec with Matchers with Sectio
     val anotherProgram = sql"select power(5, 2)".query[Int].unique
 
     transactor.use((oneProgram, anotherProgram).mapN(_ + _).transact[IO]).unsafeRunSync() should be(
-      res0)
+      res0
+    )
   }
 }
