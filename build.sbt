@@ -1,28 +1,16 @@
-import ProjectPlugin.autoImport._
-val scalaExercisesV = "0.6.0-SNAPSHOT"
+addCommandAlias("ci-test", "scalafmtCheckAll; scalafmtSbtCheck; test")
+addCommandAlias("ci-docs", "github; project-docs/mdoc; headerCreateAll")
 
-def dep(artifactId: String) = "org.scala-exercises" %% artifactId % scalaExercisesV
-
-lazy val doobie = (project in file("."))
+lazy val exercises = (project in file("."))
+  .settings(moduleName := "exercises-doobie")
+  .settings(exercisesSettings)
   .enablePlugins(ExerciseCompilerPlugin)
-  .settings(
-    name         := "exercises-doobie",
-    libraryDependencies ++= Seq(
-      dep("exercise-compiler"),
-      dep("definitions"),
-      %%("doobie-core", V.doobie),
-      %%("doobie-h2", V.doobie),
-      %%("cats-core", V.cats),
-      %%("shapeless", V.shapeless),
-      %%("scalatest", V.scalatest),
-      %%("scalacheck", V.scalacheck),
-      "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % V.scalacheckShapeless,
-      "org.scalatestplus"          %% "scalatestplus-scalacheck"  % V.scalatestplusScheck
-    )
-  )
 
-// Distribution
-
-pgpPassphrase := Some(getEnvVar("PGP_PASSPHRASE").getOrElse("").toCharArray)
-pgpPublicRing := file(s"$gpgFolder/pubring.gpg")
-pgpSecretRing := file(s"$gpgFolder/secring.gpg")
+lazy val `project-docs` = (project in file(".docs"))
+  .aggregate(exercises)
+  .dependsOn(exercises)
+  .settings(moduleName := "exercises-project-docs")
+  .settings(mdocIn := file(".docs"))
+  .settings(mdocOut := file("."))
+  .settings(skip in publish := true)
+  .enablePlugins(MdocPlugin)
