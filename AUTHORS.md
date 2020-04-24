@@ -8,6 +8,7 @@
 
 The maintainers of the project are:
 
+- [![47erbot](https://avatars1.githubusercontent.com/u/24799081?v=4&s=20) **47erbot**](https://github.com/47erbot)
 - [![angoglez](https://avatars0.githubusercontent.com/u/10107285?v=4&s=20) **Ana Gómez González (angoglez)**](https://github.com/angoglez)
 - [![dominv](https://avatars1.githubusercontent.com/u/3943031?v=4&s=20) **Domingo Valera (dominv)**](https://github.com/dominv)
 - [![kiroco12](https://avatars1.githubusercontent.com/u/48894338?v=4&s=20) **Enrique Nieto (kiroco12)**](https://github.com/kiroco12)
@@ -30,6 +31,7 @@ These are the people that have contributed to the _exercises-doobie_ project:
 - [![raulraja](https://avatars3.githubusercontent.com/u/456796?v=4&s=20) **raulraja**](https://github.com/raulraja)
 - [![tpolecat](https://avatars0.githubusercontent.com/u/1200131?v=4&s=20) **tpolecat**](https://github.com/tpolecat)
 - [![angoglez](https://avatars0.githubusercontent.com/u/10107285?v=4&s=20) **angoglez**](https://github.com/angoglez)
+- [![47erbot](https://avatars1.githubusercontent.com/u/24799081?v=4&s=20) **47erbot**](https://github.com/47erbot)
 - [![zarthross](https://avatars3.githubusercontent.com/u/1111592?v=4&s=20) **zarthross**](https://github.com/zarthross)
 - [![FRosner](https://avatars2.githubusercontent.com/u/3427394?v=4&s=20) **FRosner**](https://github.com/FRosner)
 - [![lloydmeta](https://avatars3.githubusercontent.com/u/914805?v=4&s=20) **lloydmeta**](https://github.com/lloydmeta)
