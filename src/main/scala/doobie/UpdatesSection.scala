@@ -185,8 +185,9 @@ object UpdatesSection extends AnyFlatSpec with Matchers with Section {
 
     def insert2_H2(name: String, age: Option[Int]): ConnectionIO[Person] =
       for {
-        id <- sql"insert into person (name, age) values ($name, $age)".update
-          .withUniqueGeneratedKeys[Int]("id")
+        id <-
+          sql"insert into person (name, age) values ($name, $age)".update
+            .withUniqueGeneratedKeys[Int]("id")
         p <- sql"select id, name, age from person where id = $id".query[Person].unique
       } yield p
 

@@ -28,14 +28,15 @@ object DoobieLibrary extends Library {
 
   override def color = Some("#E35E31")
 
-  override def sections: List[Section] = List(
-    ConnectingToDatabaseSection,
-    SelectingDataSection,
-    MultiColumnQueriesSection,
-    ParameterizedQueriesSection,
-    UpdatesSection,
-    ErrorHandlingSection
-  )
+  override def sections: List[Section] =
+    List(
+      ConnectingToDatabaseSection,
+      SelectingDataSection,
+      MultiColumnQueriesSection,
+      ParameterizedQueriesSection,
+      UpdatesSection,
+      ErrorHandlingSection
+    )
 
   override def logoPath = "doobie"
 }
