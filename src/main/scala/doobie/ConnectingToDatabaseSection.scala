@@ -25,7 +25,8 @@ import org.scalaexercises.definitions.Section
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
 
-/** ==Introduction==
+/**
+ * ==Introduction==
  * doobie is a monadic API that provides a number of data types that all work the same way
  * but describe computations in different contexts.
  *
@@ -115,7 +116,8 @@ object ConnectingToDatabaseSection extends AnyFlatSpec with Matchers with Sectio
   def constantValue(res0: Int) =
     transactor.use(42.pure[ConnectionIO].transact[IO]).unsafeRunSync() should be(res0)
 
-  /** We have computed a constant. It’s not very interesting because we never ask the database to
+  /**
+   * We have computed a constant. It’s not very interesting because we never ask the database to
    * perform any work, but it’s a first step
    *
    * We are gonna connect to a database to compute a constant.
@@ -126,7 +128,8 @@ object ConnectingToDatabaseSection extends AnyFlatSpec with Matchers with Sectio
   def constantValueFromDatabase(res0: Int) =
     transactor.use(sql"select 42".query[Int].unique.transact[IO]).unsafeRunSync() should be(res0)
 
-  /** What if we want to do more than one thing in a transaction? Easy! `ConnectionIO` is a monad,
+  /**
+   * What if we want to do more than one thing in a transaction? Easy! `ConnectionIO` is a monad,
    * so we can use a for comprehension to compose two smaller programs into one larger program.
    */
   def combineTwoPrograms(res0: (Int, Int)) = {
@@ -138,7 +141,8 @@ object ConnectingToDatabaseSection extends AnyFlatSpec with Matchers with Sectio
     transactor.use(largerProgram.transact[IO]).unsafeRunSync() should be(res0)
   }
 
-  /** The astute among you will note that we don’t actually need a monad to do this; an applicative
+  /**
+   * The astute among you will note that we don’t actually need a monad to do this; an applicative
    * functor is all we need here. So we could also write the above program as:
    */
   def combineTwoProgramsWithApplicative(res0: Int) = {

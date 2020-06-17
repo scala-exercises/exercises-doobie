@@ -18,7 +18,8 @@ package doobielib
 
 import org.scalaexercises.definitions.{Library, Section}
 
-/** doobie is a pure functional JDBC layer for Scala.
+/**
+ * doobie is a pure functional JDBC layer for Scala.
  *
  * @param name doobie
  */

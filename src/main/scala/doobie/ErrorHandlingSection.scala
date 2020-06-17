@@ -89,7 +89,7 @@ import org.scalatest.matchers.should.Matchers
  *  - `exceptSomeSqlState` recovers from specified `SQLState`s with a new action.
  *
  * @param name error_handling
- **/
+ */
 object ErrorHandlingSection extends AnyFlatSpec with Matchers with Section {
 
   /**
