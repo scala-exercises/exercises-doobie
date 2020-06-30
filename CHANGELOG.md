@@ -1,5 +1,31 @@
 # Changelog
 
+## [v0.6.4](https://github.com/scala-exercises/exercises-doobie/tree/v0.6.4) (2020-06-30)
+
+[Full Changelog](https://github.com/scala-exercises/exercises-doobie/compare/v0.6.3...v0.6.4)
+
+## [v0.6.3](https://github.com/scala-exercises/exercises-doobie/tree/v0.6.3) (2020-06-29)
+
+[Full Changelog](https://github.com/scala-exercises/exercises-doobie/compare/v0.6.2...v0.6.3)
+
+📈 **Dependency updates**
+
+- Update sbt to 1.3.13 [\#76](https://github.com/scala-exercises/exercises-doobie/pull/76) ([scala-steward](https://github.com/scala-steward))
+- Update sbt-mdoc to 2.2.3 [\#75](https://github.com/scala-exercises/exercises-doobie/pull/75) ([scala-steward](https://github.com/scala-steward))
+- Update scalafmt-core to 2.6.1 [\#74](https://github.com/scala-exercises/exercises-doobie/pull/74) ([scala-steward](https://github.com/scala-steward))
+- Update scalacheck-1-14 to 3.2.0.0 [\#73](https://github.com/scala-exercises/exercises-doobie/pull/73) ([scala-steward](https://github.com/scala-steward))
+- Update scalatest to 3.2.0 [\#72](https://github.com/scala-exercises/exercises-doobie/pull/72) ([scala-steward](https://github.com/scala-steward))
+- Update sbt-mdoc to 2.2.2 [\#66](https://github.com/scala-exercises/exercises-doobie/pull/66) ([scala-steward](https://github.com/scala-steward))
+- Update sbt to 1.3.11 [\#64](https://github.com/scala-exercises/exercises-doobie/pull/64) ([scala-steward](https://github.com/scala-steward))
+- Update scalatest to 3.1.2 [\#63](https://github.com/scala-exercises/exercises-doobie/pull/63) ([scala-steward](https://github.com/scala-steward))
+
+**Merged pull requests:**
+
+- Update definitions, exercise-compiler, ... to 0.6.3 [\#77](https://github.com/scala-exercises/exercises-doobie/pull/77) ([scala-steward](https://github.com/scala-steward))
+- Update scalafmt-core to 2.6.0 [\#70](https://github.com/scala-exercises/exercises-doobie/pull/70) ([BenFradet](https://github.com/BenFradet))
+- Update scalafmt-core to 2.5.3 [\#68](https://github.com/scala-exercises/exercises-doobie/pull/68) ([BenFradet](https://github.com/BenFradet))
+- Prepare repository for next  release and SBT build improvements [\#65](https://github.com/scala-exercises/exercises-doobie/pull/65) ([juanpedromoreno](https://github.com/juanpedromoreno))
+
 ## [v0.6.2](https://github.com/scala-exercises/exercises-doobie/tree/v0.6.2) (2020-04-27)
 
 [Full Changelog](https://github.com/scala-exercises/exercises-doobie/compare/v0.6.1...v0.6.2)
