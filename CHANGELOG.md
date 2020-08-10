@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.6.6](https://github.com/scala-exercises/exercises-doobie/tree/v0.6.6) (2020-08-10)
+
+[Full Changelog](https://github.com/scala-exercises/exercises-doobie/compare/v0.6.5...v0.6.6)
+
+📈 **Dependency updates**
+
+- Update definitions, exercise-compiler, ... to 0.6.4 [\#87](https://github.com/scala-exercises/exercises-doobie/pull/87) ([47erbot](https://github.com/47erbot))
+
 ## [v0.6.5](https://github.com/scala-exercises/exercises-doobie/tree/v0.6.5) (2020-08-10)
 
 [Full Changelog](https://github.com/scala-exercises/exercises-doobie/compare/v0.6.4...v0.6.5)
