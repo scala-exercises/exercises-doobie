@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.6.5](https://github.com/scala-exercises/exercises-doobie/tree/v0.6.5) (2020-08-10)
+
+[Full Changelog](https://github.com/scala-exercises/exercises-doobie/compare/v0.6.4...v0.6.5)
+
+📈 **Dependency updates**
+
+- Update sbt-mdoc to 2.2.4 [\#86](https://github.com/scala-exercises/exercises-doobie/pull/86) ([47erbot](https://github.com/47erbot))
+- Update scalacheck-1-14 to 3.2.1.0 [\#85](https://github.com/scala-exercises/exercises-doobie/pull/85) ([47erbot](https://github.com/47erbot))
+- Update scalatest to 3.2.1 [\#84](https://github.com/scala-exercises/exercises-doobie/pull/84) ([47erbot](https://github.com/47erbot))
+- Update sbt-scalafmt to 2.4.2 [\#83](https://github.com/scala-exercises/exercises-doobie/pull/83) ([47erbot](https://github.com/47erbot))
+- Update scalafmt-core to 2.6.4 [\#82](https://github.com/scala-exercises/exercises-doobie/pull/82) ([47erbot](https://github.com/47erbot))
+- Update scalafmt-core to 2.6.3 [\#81](https://github.com/scala-exercises/exercises-doobie/pull/81) ([scala-steward](https://github.com/scala-steward))
+- Update scalafmt-core to 2.6.2 [\#79](https://github.com/scala-exercises/exercises-doobie/pull/79) ([scala-steward](https://github.com/scala-steward))
+
 ## [v0.6.4](https://github.com/scala-exercises/exercises-doobie/tree/v0.6.4) (2020-06-30)
 
 [Full Changelog](https://github.com/scala-exercises/exercises-doobie/compare/v0.6.3...v0.6.4)

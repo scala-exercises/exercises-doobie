@@ -9,6 +9,7 @@
 The maintainers of the project are:
 
 - [![47erbot](https://avatars1.githubusercontent.com/u/24799081?v=4&s=20) **47erbot**](https://github.com/47erbot)
+- [![alejandrohdezma](https://avatars0.githubusercontent.com/u/9027541?v=4&s=20) **Alejandro Hernández (alejandrohdezma)**](https://github.com/alejandrohdezma)
 - [![angoglez](https://avatars0.githubusercontent.com/u/10107285?v=4&s=20) **Ana Gómez González (angoglez)**](https://github.com/angoglez)
 - [![BenFradet](https://avatars2.githubusercontent.com/u/1737211?v=4&s=20) **Ben Fradet (BenFradet)**](https://github.com/BenFradet)
 - [![dominv](https://avatars1.githubusercontent.com/u/3943031?v=4&s=20) **Domingo Valera (dominv)**](https://github.com/dominv)
@@ -38,4 +39,5 @@ These are the people that have contributed to the _exercises-doobie_ project:
 - [![FRosner](https://avatars2.githubusercontent.com/u/3427394?v=4&s=20) **FRosner**](https://github.com/FRosner)
 - [![lloydmeta](https://avatars3.githubusercontent.com/u/914805?v=4&s=20) **lloydmeta**](https://github.com/lloydmeta)
 - [![etaty](https://avatars1.githubusercontent.com/u/461170?v=4&s=20) **etaty**](https://github.com/etaty)
+- [![alejandrohdezma](https://avatars0.githubusercontent.com/u/9027541?v=4&s=20) **alejandrohdezma**](https://github.com/alejandrohdezma)
 - [![zailushangde](https://avatars2.githubusercontent.com/u/12761009?v=4&s=20) **zailushangde**](https://github.com/zailushangde)
