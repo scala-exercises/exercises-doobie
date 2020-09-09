@@ -183,8 +183,8 @@ object ErrorHandlingSection extends AnyFlatSpec with Matchers with Section {
 
     def safeInsert(name: String, age: Option[Int]): ConnectionIO[Long] =
       insert(name, age)
-        .exceptSqlState {
-          case UNIQUE_VIOLATION => insert(name + "_20", age)
+        .exceptSqlState { case UNIQUE_VIOLATION =>
+          insert(name + "_20", age)
         }
 
     val insertedRows = for {
