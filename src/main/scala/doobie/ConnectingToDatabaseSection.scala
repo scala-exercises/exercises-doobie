@@ -27,12 +27,12 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 /**
  * ==Introduction==
- * doobie is a monadic API that provides a number of data types that all work the same way
- * but describe computations in different contexts.
+ * doobie is a monadic API that provides a number of data types that all work the same way but
+ * describe computations in different contexts.
  *
  * In the doobie high level API the most common types we will deal with have the form
- * ConnectionIO[A], specifying computations that take place in a context where a
- * java.sql.Connection is available, ultimately producing a value of type A.
+ * ConnectionIO[A], specifying computations that take place in a context where a java.sql.Connection
+ * is available, ultimately producing a value of type A.
  *
  * doobie programs are values. You can compose small programs to build larger programs. Once you
  * have constructed a program you wish to run, you interpret it into an effectful target monad of
@@ -57,9 +57,9 @@ import org.scalatest.flatspec.AnyFlatSpec
  * import cats.implicits._
  * }}}
  *
- * In the doobie high level API the most common types we will deal with have the form `ConnectionIO[A]`,
- * specifying computations that take place in a context where a `java.sql.Connection` is available,
- * ultimately producing a value of type `A`.
+ * In the doobie high level API the most common types we will deal with have the form
+ * `ConnectionIO[A]`, specifying computations that take place in a context where a
+ * `java.sql.Connection` is available, ultimately producing a value of type `A`.
  *
  * So let’s start with a `ConnectionIO` program that simply returns a constant.
  *
@@ -71,12 +71,12 @@ import org.scalatest.flatspec.AnyFlatSpec
  * This is a perfectly respectable doobie program, but we can’t run it as-is; we need a `Connection`
  * first. There are several ways to do this, but here let’s use a `Transactor`.
  *
- * '''Note''': DriverManagerTransactors have the advantage of no connection pooling and configuration, so
- * are perfect for testing. The main disadvantage is that it is slower than pooling connection managers,
- * no provides upper bound for concurrent connections and executes blocking operations in an unbounded
- * pool of threads. The `doobie-hikari` add-on provides a `Transactor` implementation backed by a HikariCP
- * connection pool. The connection pool is a lifetime-managed object that must be shut down cleanly, so
- * it is managed as a Resource.
+ * '''Note''': DriverManagerTransactors have the advantage of no connection pooling and
+ * configuration, so are perfect for testing. The main disadvantage is that it is slower than
+ * pooling connection managers, no provides upper bound for concurrent connections and executes
+ * blocking operations in an unbounded pool of threads. The `doobie-hikari` add-on provides a
+ * `Transactor` implementation backed by a HikariCP connection pool. The connection pool is a
+ * lifetime-managed object that must be shut down cleanly, so it is managed as a Resource.
  *
  * {{{
  * import doobie.hikari._
@@ -84,18 +84,18 @@ import org.scalatest.flatspec.AnyFlatSpec
  * // Resource yielding a transactor configured with a bounded connect EC and an unbounded
  * // transaction EC. Everything will be closed and shut down cleanly after use.
  * val transactor: Resource[IO, HikariTransactor[IO]] =
- *  for {
- *    ce <- ExecutionContexts.fixedThreadPool[IO] (32) // our connect EC
- *    be <- Blocker[IO] // our blocking EC
- *    xa <- HikariTransactor.newHikariTransactor[IO] (
- *      "org.h2.Driver", // driver classname
- *      "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", // connect URL
- *      "sa", // username
- *      "", // password
- *      ce, // await connection here
- *      be // execute JDBC operations here
- *    )
- *  } yield xa
+ *   for {
+ *     ce <- ExecutionContexts.fixedThreadPool[IO] (32) // our connect EC
+ *     be <- Blocker[IO] // our blocking EC
+ *     xa <- HikariTransactor.newHikariTransactor[IO] (
+ *       "org.h2.Driver", // driver classname
+ *       "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", // connect URL
+ *       "sa", // username
+ *       "", // password
+ *       ce, // await connection here
+ *       be // execute JDBC operations here
+ *     )
+ *   } yield xa
  * }}}
  *
  * A `Transactor` is a data type that knows how to connect to a database, hand out connections, and
@@ -104,9 +104,11 @@ import org.scalatest.flatspec.AnyFlatSpec
  * and execute single transaction.
  *
  * We are using `cats.effect.IO` as our final effect type, but you can use any monad `M[_]` given
- * `cats.effect.Async[M]`. See Using Your Own Target Monad at the end of this chapter for more details.
+ * `cats.effect.Async[M]`. See Using Your Own Target Monad at the end of this chapter for more
+ * details.
  *
- * @param name connecting_to_database
+ * @param name
+ *   connecting_to_database
  */
 object ConnectingToDatabaseSection extends AnyFlatSpec with Matchers with Section {
 
@@ -120,17 +122,17 @@ object ConnectingToDatabaseSection extends AnyFlatSpec with Matchers with Sectio
    * We have computed a constant. It’s not very interesting because we never ask the database to
    * perform any work, but it’s a first step
    *
-   * We are gonna connect to a database to compute a constant.
-   * Let’s use the sql string interpolator to construct a query that asks the database to compute
-   * a constant. The meaning of this program is “run the query, interpret the resultset as
-   * a stream of Int values, and yield its one and only element.”
+   * We are gonna connect to a database to compute a constant. Let’s use the sql string interpolator
+   * to construct a query that asks the database to compute a constant. The meaning of this program
+   * is “run the query, interpret the resultset as a stream of Int values, and yield its one and
+   * only element.”
    */
   def constantValueFromDatabase(res0: Int) =
     transactor.use(sql"select 42".query[Int].unique.transact[IO]).unsafeRunSync() should be(res0)
 
   /**
-   * What if we want to do more than one thing in a transaction? Easy! `ConnectionIO` is a monad,
-   * so we can use a for comprehension to compose two smaller programs into one larger program.
+   * What if we want to do more than one thing in a transaction? Easy! `ConnectionIO` is a monad, so
+   * we can use a for comprehension to compose two smaller programs into one larger program.
    */
   def combineTwoPrograms(res0: (Int, Int)) = {
     val largerProgram = for {

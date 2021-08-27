@@ -21,7 +21,8 @@ import org.scalaexercises.definitions.{Library, Section}
 /**
  * doobie is a pure functional JDBC layer for Scala.
  *
- * @param name doobie
+ * @param name
+ *   doobie
  */
 object DoobieLibrary extends Library {
   override def owner: String      = "scala-exercises"

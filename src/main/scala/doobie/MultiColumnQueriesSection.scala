@@ -42,15 +42,16 @@ import shapeless.record._
  * "USA"  "United States of America"  278357000    8510700.00
  * }}}
  *
- * To make simpler the code we built a method which prepares the database, makes the query and transacts
- * it all:
+ * To make simpler the code we built a method which prepares the database, makes the query and
+ * transacts it all:
  *
  * {{{
  * def transactorBlock[A](f: => ConnectionIO[A]): IO[A] =
- *    transactor.use((createCountryTable *> insertCountries(countries) *> f).transact[IO])
+ *     transactor.use((createCountryTable *> insertCountries(countries) *> f).transact[IO])
  * }}}
  *
- * @param name multi_column_queries
+ * @param name
+ *   multi_column_queries
  */
 object MultiColumnQueriesSection extends AnyFlatSpec with Matchers with Section {
 
@@ -71,9 +72,9 @@ object MultiColumnQueriesSection extends AnyFlatSpec with Matchers with Section 
   }
 
   /**
-   * doobie automatically supports row mappings for atomic column types, as well as options,
-   * tuples, `HList`s, shapeless records, and case classes thereof. So let’s try the same query
-   * with an `HList`
+   * doobie automatically supports row mappings for atomic column types, as well as options, tuples,
+   * `HList`s, shapeless records, and case classes thereof. So let’s try the same query with an
+   * `HList`
    */
   def selectMultipleColumnsUsingHList(res0: String) = {
 

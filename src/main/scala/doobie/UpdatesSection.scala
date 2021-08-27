@@ -58,7 +58,7 @@ import org.scalatest.matchers.should.Matchers
  * We can compose these and run them together.
  * {{{
  *   (drop, create).mapN(_ + _).transact(xa).unsafeRunSync
- *    // res0: Int = 0
+ *     // res0: Int = 0
  * }}}
  *
  * ==Inserting==
@@ -70,19 +70,20 @@ import org.scalatest.matchers.should.Matchers
  *     sql"insert into person (name, age) values ($name, $age)".update
  * }}}
  *
- * @param name inserting_and_updating
+ * @param name
+ *   inserting_and_updating
  */
 object UpdatesSection extends AnyFlatSpec with Matchers with Section {
 
   /**
    * Let's insert a new row by using the recently defined `insert1` method.
    *
-   * To make simpler the code we built a method which prepares the database, makes the query and transacts
-   * it all:
+   * To make simpler the code we built a method which prepares the database, makes the query and
+   * transacts it all:
    *
    * {{{
    * def transactorBlock[A](f: => ConnectionIO[A]): IO[A] =
-   *    transactor.use((createPersonTable *> f).transact[IO])
+   *     transactor.use((createPersonTable *> f).transact[IO])
    * }}}
    */
   def insertOneRow(res0: Int) = {
@@ -142,15 +143,15 @@ object UpdatesSection extends AnyFlatSpec with Matchers with Section {
 
   /**
    * ==Updating==
-   * Updating follows the same pattern. For instance, we suppose that we want to modify the age of
-   * a person.
+   * Updating follows the same pattern. For instance, we suppose that we want to modify the age of a
+   * person.
    */
   def updateExistingRow(res0: Int, res1: Int, res2: Int) = {
 
     val result = for {
       insertedRows <- insert1("Alice", Option(12)).run
       updatedRows  <- sql"update person set age = 15 where name = 'Alice'".update.run
-      person       <- sql"select id, name, age from person where name = 'Alice'".query[Person].unique
+      person <- sql"select id, name, age from person where name = 'Alice'".query[Person].unique
     } yield (insertedRows, updatedRows, person)
 
     val (insertedRows, updatedRows, person) = transactorBlock(result).unsafeRunSync()
@@ -163,8 +164,7 @@ object UpdatesSection extends AnyFlatSpec with Matchers with Section {
   /**
    * ==Retrieving info==
    * When we insert we usually want the new row back, so let’s do that. First we’ll do it the hard
-   * way, by inserting, getting the last used key via `lastVal()`, then selecting the indicated
-   * row.
+   * way, by inserting, getting the last used key via `lastVal()`, then selecting the indicated row.
    * {{{
    *   def insert2(name: String, age: Option[Short]): ConnectionIO[Person] =
    *   for {
@@ -222,12 +222,12 @@ object UpdatesSection extends AnyFlatSpec with Matchers with Section {
    *   }
    * }}}
    *
-   * == Batch Updates ==
+   * ==Batch Updates==
    * '''doobie''' supports batch updating via the `updateMany` and `updateManyWithGeneratedKeys`
    * operations on the `Update` data type. An `Update0`, which is the type of an sql"...".update
    * expression, represents a parameterized statement where the arguments are known. An `Update[A]`
-   * is more general, and represents a parameterized statement where the composite argument of
-   * type `A` is not known.
+   * is more general, and represents a parameterized statement where the composite argument of type
+   * `A` is not known.
    */
   def batchUpdates(res0: Int) = {
     type PersonInfo = (String, Option[Short])
