@@ -43,23 +43,24 @@ import org.scalatest.matchers.should.Matchers
  * "USA"  "United States of America"  278357000    8510700.00
  * }}}
  *
- * To make simpler the code we built a method which prepares the database, makes the query and transacts
- * it all:
+ * To make simpler the code we built a method which prepares the database, makes the query and
+ * transacts it all:
  * {{{
  * def transactorBlock[A](f: => ConnectionIO[A]): IO[A] =
- *    transactor.use((createCountryTable *> insertCountries(countries) *> f).transact[IO])
+ *     transactor.use((createCountryTable *> insertCountries(countries) *> f).transact[IO])
  * }}}
  *
- * @param name parameterized_queries
+ * @param name
+ *   parameterized_queries
  */
 object ParameterizedQueriesSection extends AnyFlatSpec with Matchers with Section {
 
   /**
-   * == Adding a Parameter ==
+   * ==Adding a Parameter==
    *
-   * Let’s factor our query into a method and add a parameter that selects only the countries with
-   * a population larger than some value the user will provide. We insert the minPop argument into
-   * our SQL statement as $minPop, just as if we were doing string interpolation.
+   * Let’s factor our query into a method and add a parameter that selects only the countries with a
+   * population larger than some value the user will provide. We insert the minPop argument into our
+   * SQL statement as $minPop, just as if we were doing string interpolation.
    * {{{
    *   def biggerThan(minPop: Int) =
    *   sql"""
@@ -80,18 +81,18 @@ object ParameterizedQueriesSection extends AnyFlatSpec with Matchers with Sectio
   }
 
   /**
-   * So what’s going on? It looks like we’re just dropping a string literal into our SQL string,
-   * but actually we’re constructing a proper parameterized PreparedStatement, and the minProp
-   * value is ultimately set via a call to setInt
+   * So what’s going on? It looks like we’re just dropping a string literal into our SQL string, but
+   * actually we’re constructing a proper parameterized PreparedStatement, and the minProp value is
+   * ultimately set via a call to setInt
    *
    * '''doobie''' allows you to interpolate values of any type (and options thereof) with a `Put`
    * instance, which includes:
-   *  - any JVM type that has a target mapping defined by the JDBC specification,
-   *  - vendor-specific types defined by extension packages,
-   *  - custom column types that you define, and
-   *  - single-member products (case classes, typically) of any of the above.
+   *   - any JVM type that has a target mapping defined by the JDBC specification,
+   *   - vendor-specific types defined by extension packages,
+   *   - custom column types that you define, and
+   *   - single-member products (case classes, typically) of any of the above.
    *
-   * == Multiple Parameters ==
+   * ==Multiple Parameters==
    *
    * Multiple parameters work the same way.
    * {{{
@@ -114,19 +115,19 @@ object ParameterizedQueriesSection extends AnyFlatSpec with Matchers with Sectio
   }
 
   /**
-   * == Dealing with IN Clauses ==
+   * ==Dealing with IN Clauses==
    *
    * A common irritant when dealing with SQL literals is the desire to inline a sequence of
-   * arguments into an IN clause, but SQL does not support this notion (nor does JDBC do anything
-   * to assist). doobie supports this via statement fragments.
+   * arguments into an IN clause, but SQL does not support this notion (nor does JDBC do anything to
+   * assist). doobie supports this via statement fragments.
    * {{{
    *   def populationIn(range: Range, codes: NonEmptyList[String]) = {
    *     val q = fr"""
-   *        select code, name, population, gnp
-   *        from country
-   *        where population > ${range.min}
-   *        and   population < ${range.max}
-   *        and   """ ++ Fragments.in(fr"code", codes) // code IN (...)
+   *         select code, name, population, gnp
+   *         from country
+   *         where population > ${range.min}
+   *         and   population < ${range.max}
+   *         and   """ ++ Fragments.in(fr"code", codes) // code IN (...)
    *     q.query[Country]
    *   }
    * }}}

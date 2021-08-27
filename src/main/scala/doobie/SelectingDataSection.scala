@@ -46,30 +46,34 @@ import org.scalatest.matchers.should.Matchers
  * "USA"  "United States of America"  278357000    8510700.00
  * }}}
  *
- * == How to select data ==
+ * ==How to select data==
  *
  * As we commented in the previous section, the `sql` string interpolator allows us to create a
  * query to select data from the database.
  *
- * For instance, `sql"select name from country".query[String]` defines a `Query0[String]`, which
- * is a one-column query that maps each returned row to a String.
+ * For instance, `sql"select name from country".query[String]` defines a `Query0[String]`, which is
+ * a one-column query that maps each returned row to a String.
  *
  * `.to[List]` is a convenience method that accumulates rows into a `List`, in this case yielding a
- * `ConnectionIO[List[String]]`. It works with any collection type that has a `CanBuildFrom`. Similar methods are:
- * - `.unique` which returns a single value, raising an exception if there is not exactly one row returned.
- * - `.option` which returns an `Option`, raising an exception if there is more than one row returned.
- * - `.nel` which returns a `NonEmptyList`, raising an exception if there are no rows returned.
- * See the Scaladoc for Query0 for more information on these and other methods.
+ * `ConnectionIO[List[String]]`. It works with any collection type that has a `CanBuildFrom`.
+ * Similar methods are:
+ *   - `.unique` which returns a single value, raising an exception if there is not exactly one row
+ *     returned.
+ *   - `.option` which returns an `Option`, raising an exception if there is more than one row
+ *     returned.
+ *   - `.nel` which returns a `NonEmptyList`, raising an exception if there are no rows returned.
+ *     See the Scaladoc for Query0 for more information on these and other methods.
  *
- * @param name selecting_data
+ * @param name
+ *   selecting_data
  */
 object SelectingDataSection extends AnyFlatSpec with Matchers with Section {
 
   /**
-   * == Getting info about the countries ==
+   * ==Getting info about the countries==
    *
-   * To make simpler the code we built a method which prepares the database, makes the query and transacts
-   * it all:
+   * To make simpler the code we built a method which prepares the database, makes the query and
+   * transacts it all:
    *
    * {{{
    * def transactorBlock[A](f: => ConnectionIO[A]): IO[A] =
@@ -100,8 +104,8 @@ object SelectingDataSection extends AnyFlatSpec with Matchers with Section {
   }
 
   /**
-   * When the query can return more than one row, we can use the `list` to accumulate the results
-   * in a List.
+   * When the query can return more than one row, we can use the `list` to accumulate the results in
+   * a List.
    */
   def selectCountryNameList(res0: String) = {
 
@@ -117,10 +121,10 @@ object SelectingDataSection extends AnyFlatSpec with Matchers with Section {
    * This is ok, but there’s not much point reading all the results from the database when we only
    * want the first few rows.
    *
-   * The difference here is that stream gives us an fs2 Stream[ConnectionIO, String] that emits
-   * rows as they arrive from the database. By applying take(5) we instruct the stream to shut
-   * everything down (and clean everything up) after five elements have been emitted. This is
-   * much more efficient than pulling all 239 rows and then throwing most of them away.
+   * The difference here is that stream gives us an fs2 Stream[ConnectionIO, String] that emits rows
+   * as they arrive from the database. By applying take(5) we instruct the stream to shut everything
+   * down (and clean everything up) after five elements have been emitted. This is much more
+   * efficient than pulling all 239 rows and then throwing most of them away.
    */
   def selectCountryNameListByUsingProcess(res0: Int) = {
 
