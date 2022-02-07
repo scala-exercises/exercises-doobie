@@ -23,6 +23,7 @@ import doobie.implicits._
 import org.scalaexercises.definitions.Section
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import cats.effect.unsafe.IORuntime
 
 /**
  * ==About Exceptions==
@@ -96,6 +97,8 @@ import org.scalatest.matchers.should.Matchers
  *   error_handling
  */
 object ErrorHandlingSection extends AnyFlatSpec with Matchers with Section {
+
+  implicit val runtime: IORuntime = IORuntime.global
 
   /**
    * Let's do some exercises where errors will happen and see how to deal with them.
@@ -188,7 +191,7 @@ object ErrorHandlingSection extends AnyFlatSpec with Matchers with Section {
 
     def safeInsert(name: String, age: Option[Int]): ConnectionIO[Long] =
       insert(name, age)
-        .exceptSqlState { case UNIQUE_VIOLATION =>
+        .exceptSomeSqlState { case UNIQUE_VIOLATION =>
           insert(name + "_20", age)
         }
 

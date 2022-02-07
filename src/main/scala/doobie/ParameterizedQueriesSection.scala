@@ -22,6 +22,7 @@ import ParameterizedQueryHelpers._
 import org.scalaexercises.definitions.Section
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import cats.effect.unsafe.IORuntime
 
 /**
  * Previously we have worked with static SQL queries where the values used to filter data were
@@ -54,6 +55,8 @@ import org.scalatest.matchers.should.Matchers
  *   parameterized_queries
  */
 object ParameterizedQueriesSection extends AnyFlatSpec with Matchers with Section {
+
+  implicit val runtime: IORuntime = IORuntime.global
 
   /**
    * ==Adding a Parameter==

@@ -24,6 +24,7 @@ import doobie._
 import org.scalaexercises.definitions.Section
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
+import cats.effect.unsafe.IORuntime
 
 /**
  * ==Introduction==
@@ -111,6 +112,8 @@ import org.scalatest.flatspec.AnyFlatSpec
  *   connecting_to_database
  */
 object ConnectingToDatabaseSection extends AnyFlatSpec with Matchers with Section {
+
+  implicit val runtime: IORuntime = IORuntime.global
 
   /**
    * And here we go.
