@@ -9,8 +9,6 @@ ThisBuild / scalaVersion       := "2.13.8"
 // See also: https://github.com/scala-exercises/exercises-cats/pull/267
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % "always"
 
-ThisBuild / resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-
 // This is required by the exercises compiler:
 publishLocal  := (publishLocal dependsOn compile).value
 publishSigned := (publishSigned dependsOn compile).value
@@ -33,6 +31,9 @@ lazy val exercises = (project in file("."))
       "org.scalacheck"             %% "scalacheck"                % "1.15.4",
       "org.scalatestplus"          %% "scalacheck-1-14"           % "3.2.2.0",
       "com.github.alexarchambault" %% "scalacheck-shapeless_1.15" % "1.3.0"
+    ),
+    resolvers ++= Seq(
+      "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
     )
   )
   .enablePlugins(ExerciseCompilerPlugin)
