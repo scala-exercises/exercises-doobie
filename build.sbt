@@ -10,7 +10,9 @@ ThisBuild / scalaVersion       := "2.13.8"
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % "always"
 
 resolvers ++= Seq(
-  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+  Resolver.sbtPluginRepo("snapshots"),
+  Resolver.sbtPluginRepo("releases")
 )
 
 // This is required by the exercises compiler:
