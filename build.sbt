@@ -21,8 +21,8 @@ lazy val exercises = (project in file("."))
   .settings(name := "exercises-doobie")
   .settings(
     libraryDependencies ++= Seq(
-      "org.scala-exercises"        %% "exercise-compiler"         % "0.7.1",
-      "org.scala-exercises"        %% "definitions"               % "0.7.1",
+      "org.scala-exercises"        %% "exercise-compiler"         % "0.7.1+14-b94ba7a2-SNAPSHOT",
+      "org.scala-exercises"        %% "definitions"               % "0.7.1+14-b94ba7a2-SNAPSHOT",
       "org.typelevel"              %% "cats-core"                 % "2.7.0",
       "org.tpolecat"               %% "doobie-core"               % "1.0.0-RC2",
       "org.tpolecat"               %% "doobie-h2"                 % "1.0.0-RC2",
