@@ -17,8 +17,6 @@
 package doobielib
 
 import org.scalaexercises.definitions.{Library, Section}
-import org.scalaexercises.runtime.model.{Library => RuntimeLibrary, Section => RuntimeSection}
-import org.scalaexercises.runtime.model.BuildInfo
 
 /**
  * doobie is a pure functional JDBC layer for Scala.
@@ -26,23 +24,21 @@ import org.scalaexercises.runtime.model.BuildInfo
  * @param name
  *   doobie
  */
-object DoobieLibrary extends RuntimeLibrary {
-
-  override def name: String = ???
-
-  override def description: String = ???
-
-  override def logoData: Option[String] = ???
-
-  override def timestamp: String = ???
-
-  override def buildMetaInfo: BuildInfo = ???
-
+object DoobieLibrary extends Library {
   override def owner: String      = "scala-exercises"
   override def repository: String = "exercises-doobie"
 
   override def color = Some("#E35E31")
 
-  override def sections: List[RuntimeSection] = Nil
+  override def sections: List[Section] =
+    List(
+      ConnectingToDatabaseSection,
+      SelectingDataSection,
+      MultiColumnQueriesSection,
+      ParameterizedQueriesSection,
+      UpdatesSection,
+      ErrorHandlingSection
+    )
+
   override def logoPath = "doobie"
 }
