@@ -27,15 +27,15 @@ lazy val exercises = (project in file("."))
   .settings(name := "exercises-doobie")
   .settings(
     libraryDependencies ++= Seq(
-      "org.scala-exercises"        %% "exercise-compiler"         % "0.7.1+14-b94ba7a2-SNAPSHOT",
-      "org.scala-exercises"        %% "definitions"               % "0.7.1+14-b94ba7a2-SNAPSHOT",
+      "org.scala-exercises"        %% "exercise-compiler"         % "0.7.1",
+      "org.scala-exercises"        %% "definitions"               % "0.7.1",
       "org.typelevel"              %% "cats-core"                 % "2.7.0",
       "org.tpolecat"               %% "doobie-core"               % "1.0.0-RC2",
       "org.tpolecat"               %% "doobie-h2"                 % "1.0.0-RC2",
       "com.chuusai"                %% "shapeless"                 % "2.3.7",
       "org.scalatest"              %% "scalatest"                 % "3.2.11",
       "org.scalacheck"             %% "scalacheck"                % "1.15.4",
-      "org.scalatestplus"          %% "scalacheck-1-14"           % "3.2.2.0",
+      "org.scalatestplus"          %% "scalacheck-1-15"           % "3.2.9.0",
       "com.github.alexarchambault" %% "scalacheck-shapeless_1.15" % "1.3.0"
     ),
     resolvers ++= Seq(
