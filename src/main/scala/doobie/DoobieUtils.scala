@@ -27,8 +27,6 @@ import Model._
 
 object DoobieUtils {
 
-  implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
-
   val transactor: Resource[IO, H2Transactor[IO]] = {
     def url  = "jdbc:h2:mem:"
     val user = "sa"
@@ -36,8 +34,7 @@ object DoobieUtils {
 
     for {
       ec <- ExecutionContexts.fixedThreadPool[IO](1)
-      bc <- Blocker[IO]
-      xa <- H2Transactor.newH2Transactor[IO](url, user, pass, ec, bc)
+      xa <- H2Transactor.newH2Transactor[IO](url, user, pass, ec)
     } yield xa
   }
 

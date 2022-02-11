@@ -25,6 +25,7 @@ import UpdatesSectionHelpers.Person
 import org.scalaexercises.definitions.Section
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import cats.effect.unsafe.IORuntime
 
 /**
  * In this section we examine operations that modify data in the database, and ways to retrieve the
@@ -74,6 +75,8 @@ import org.scalatest.matchers.should.Matchers
  *   inserting_and_updating
  */
 object UpdatesSection extends AnyFlatSpec with Matchers with Section {
+
+  implicit val runtime: IORuntime = IORuntime.global
 
   /**
    * Let's insert a new row by using the recently defined `insert1` method.

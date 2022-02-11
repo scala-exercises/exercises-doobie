@@ -21,6 +21,7 @@ import DoobieUtils.CountryTable._
 import org.scalaexercises.definitions.Section
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import cats.effect.unsafe.IORuntime
 
 /**
  * We are going to construct some programs that retrieve data from the database and stream it back,
@@ -68,6 +69,8 @@ import org.scalatest.matchers.should.Matchers
  *   selecting_data
  */
 object SelectingDataSection extends AnyFlatSpec with Matchers with Section {
+
+  implicit val runtime: IORuntime = IORuntime.global
 
   /**
    * ==Getting info about the countries==

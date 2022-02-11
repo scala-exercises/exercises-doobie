@@ -24,6 +24,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import shapeless._
 import shapeless.record._
+import cats.effect.unsafe.IORuntime
 
 /**
  * So far, we have constructed queries that return single-column results. These results were mapped
@@ -54,6 +55,8 @@ import shapeless.record._
  *   multi_column_queries
  */
 object MultiColumnQueriesSection extends AnyFlatSpec with Matchers with Section {
+
+  implicit val runtime: IORuntime = IORuntime.global
 
   /**
    * We can select multiple columns and map them to a tuple. The `gnp` column in our table is

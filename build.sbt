@@ -4,6 +4,17 @@ ThisBuild / organization       := "org.scala-exercises"
 ThisBuild / githubOrganization := "47degrees"
 ThisBuild / scalaVersion       := "2.13.8"
 
+// Required to prevent errors for eviction from binary incompatible dependency
+// resolutions.
+// See also: https://github.com/scala-exercises/exercises-cats/pull/267
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % "always"
+
+resolvers ++= Seq(
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+  Resolver.sbtPluginRepo("snapshots"),
+  Resolver.sbtPluginRepo("releases")
+)
+
 // This is required by the exercises compiler:
 publishLocal  := (publishLocal dependsOn compile).value
 publishSigned := (publishSigned dependsOn compile).value
@@ -16,16 +27,19 @@ lazy val exercises = (project in file("."))
   .settings(name := "exercises-doobie")
   .settings(
     libraryDependencies ++= Seq(
-      "org.scala-exercises"        %% "exercise-compiler"         % "0.6.7",
-      "org.scala-exercises"        %% "definitions"               % "0.6.7",
+      "org.scala-exercises"        %% "exercise-compiler"         % "0.7.1",
+      "org.scala-exercises"        %% "definitions"               % "0.7.1",
       "org.typelevel"              %% "cats-core"                 % "2.7.0",
-      "org.tpolecat"               %% "doobie-core"               % "0.13.4",
-      "org.tpolecat"               %% "doobie-h2"                 % "0.13.4",
+      "org.tpolecat"               %% "doobie-core"               % "1.0.0-RC2",
+      "org.tpolecat"               %% "doobie-h2"                 % "1.0.0-RC2",
       "com.chuusai"                %% "shapeless"                 % "2.3.7",
-      "org.scalatest"              %% "scalatest"                 % "3.2.10",
+      "org.scalatest"              %% "scalatest"                 % "3.2.11",
       "org.scalacheck"             %% "scalacheck"                % "1.15.4",
-      "org.scalatestplus"          %% "scalacheck-1-14"           % "3.2.2.0",
+      "org.scalatestplus"          %% "scalacheck-1-15"           % "3.2.9.0",
       "com.github.alexarchambault" %% "scalacheck-shapeless_1.15" % "1.3.0"
+    ),
+    resolvers ++= Seq(
+      "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
     )
   )
   .enablePlugins(ExerciseCompilerPlugin)
