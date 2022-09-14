@@ -21,7 +21,7 @@ lazy val exercises = (project in file("."))
       "org.typelevel"              %% "cats-core"                 % "2.8.0",
       "org.tpolecat"               %% "doobie-core"               % "0.13.4",
       "org.tpolecat"               %% "doobie-h2"                 % "0.13.4",
-      "com.chuusai"                %% "shapeless"                 % "2.3.9",
+      "com.chuusai"                %% "shapeless"                 % "2.3.10",
       "org.scalatest"              %% "scalatest"                 % "3.2.13",
       "org.scalacheck"             %% "scalacheck"                % "1.16.0",
       "org.scalatestplus"          %% "scalacheck-1-14"           % "3.2.2.0",
